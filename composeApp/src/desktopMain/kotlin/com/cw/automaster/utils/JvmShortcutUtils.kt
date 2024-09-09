@@ -23,7 +23,7 @@ object JvmShortcutUtils {
         }
     }
 
-    fun getShortcut(keyEvent: KeyEvent): String? {
+    private fun getShortcut(keyEvent: KeyEvent): String? {
         val keyText = KeyEvent.getKeyText(keyEvent.keyCode)
         if (keyText in keys) {
             val platformType = getPlatformType()
@@ -34,22 +34,25 @@ object JvmShortcutUtils {
         return null
     }
 
-    private fun macShortcut(keyEvent: KeyEvent): String {
-        return buildString {
-            if (keyEvent.isControlDown) {
-                append("⌃+")
+    private fun macShortcut(keyEvent: KeyEvent): String? {
+        if (keyEvent.isControlDown || keyEvent.isShiftDown || keyEvent.isMetaDown || keyEvent.isAltDown) {
+            return buildString {
+                if (keyEvent.isControlDown) {
+                    append("⌃+")
+                }
+                if (keyEvent.isShiftDown) {
+                    append("⇧+")
+                }
+                if (keyEvent.isMetaDown) {
+                    append("⌘+")
+                }
+                if (keyEvent.isAltDown) {
+                    append("⌥+")
+                }
+                append(KeyEvent.getKeyText(keyEvent.keyCode))
             }
-            if (keyEvent.isShiftDown) {
-                append("⇧+")
-            }
-            if (keyEvent.isMetaDown) {
-                append("⌘+")
-            }
-            if (keyEvent.isAltDown) {
-                append("⌥+")
-            }
-            append(KeyEvent.getKeyText(keyEvent.keyCode))
         }
+        return null
     }
 
     private val keys = listOf(

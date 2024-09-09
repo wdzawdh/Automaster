@@ -24,22 +24,25 @@ object ShortcutUtils {
         return null
     }
 
-    private fun macShortcut(keyEvent: KeyEvent): String {
-        return buildString {
-            if (keyEvent.isCtrlPressed) {
-                append("⌃+")
+    private fun macShortcut(keyEvent: KeyEvent): String? {
+        if (keyEvent.isCtrlPressed || keyEvent.isShiftPressed || keyEvent.isMetaPressed || keyEvent.isAltPressed) {
+            return buildString {
+                if (keyEvent.isCtrlPressed) {
+                    append("⌃+")
+                }
+                if (keyEvent.isShiftPressed) {
+                    append("⇧+")
+                }
+                if (keyEvent.isMetaPressed) {
+                    append("⌘+")
+                }
+                if (keyEvent.isAltPressed) {
+                    append("⌥+")
+                }
+                append(keyEvent.key.toString().replace("Key: ", ""))
             }
-            if (keyEvent.isShiftPressed) {
-                append("⇧+")
-            }
-            if (keyEvent.isMetaPressed) {
-                append("⌘+")
-            }
-            if (keyEvent.isAltPressed) {
-                append("⌥+")
-            }
-            append(keyEvent.key.toString().replace("Key: ", ""))
         }
+        return null
     }
 
     private val keys = listOf(
