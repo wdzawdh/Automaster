@@ -37,13 +37,21 @@ fun main() = application {
         // 窗口最小宽高
         window.minimumSize = Dimension(400, 400)
         // 监听Dock图标被点击
-        DockListener.setOnDockIconClickListener {
+        setDockListener {
             isVisible.value = true
         }
         // 快捷键
         initShortcut()
         // UI
         App()
+    }
+}
+
+private fun setDockListener(onDockIconClicked: (() -> Unit)) {
+    GlobalScope.launch {
+        val dockListener = DockListener()
+        dockListener.onDockIconClicked = onDockIconClicked
+        dockListener.setupDockListener()
     }
 }
 

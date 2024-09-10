@@ -1,51 +1,82 @@
-#import <Cocoa/Cocoa.h>
 #include <jni.h>
+#include <Cocoa/Cocoa.h>
+
+// 先声明 dockIconClicked 函数
+void dockIconClicked();
 
 JavaVM *jvm;
-jclass cls;
-jmethodID methodID;
+jobject dockListenerInstance;
 
-// 定义一个 NSApplicationDelegate 类
-@interface DockDelegate : NSObject <NSApplicationDelegate>
+// Objective-C 实现的 AppDelegate 类，用于监听 Dock 图标点击
+@interface AppDelegate : NSObject <NSApplicationDelegate>
 @end
 
-@implementation DockDelegate
+@implementation AppDelegate
 
-// 当 Dock 图标被点击时，这个方法会被调用
-- (void)applicationDidBecomeActive:(NSNotification *)notification {
-    JNIEnv *env;
-    // Attach JVM 到当前线程
-    (*jvm)->AttachCurrentThread(jvm, (void**)&env, NULL);
-
-    // 调用 Java 方法
-    (*env)->CallStaticVoidMethod(env, cls, methodID);
-
-    // Detach 线程
-    (*jvm)->DetachCurrentThread(jvm);
+// 处理应用通过 Dock 图标被点击时的事件
+- (BOOL)applicationShouldHandleReopen:(NSApplication *)sender hasVisibleWindows:(BOOL)flag {
+    NSLog(@"Dock icon clicked, application reopened");
+    dockIconClicked();  // 调用 JNI 回调函数
+    return YES;
 }
 
 @end
 
-// 这个函数用于设置 Dock 栏的监听
-void setupDockClickListener() {
-    // 获取应用程序实例
+// 设置 Dock 图标监听器的函数
+void setupDockIconListener() {
+    // 创建并设置应用委托
     NSApplication *app = [NSApplication sharedApplication];
-
-    // 创建并设置委托
-    DockDelegate *delegate = [[DockDelegate alloc] init];
+    AppDelegate *delegate = [[AppDelegate alloc] init];
     [app setDelegate:delegate];
 
-    // 激活应用
+    // 设置应用的激活策略，使其显示在 Dock 中
     [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
-    [NSApp activateIgnoringOtherApps:YES];
+
+    // 运行应用循环
+    [app run];
 }
 
-JNIEXPORT void JNICALL Java_com_cw_automaster_dock_DockListener_setupDockListener(JNIEnv *env, jclass jCls) {
-    // 初始化 JVM 和 Java 类的引用
-    (*env)->GetJavaVM(env, &jvm);
-    cls = (jclass)(*env)->NewGlobalRef(env, jCls);
-    methodID = (*env)->GetStaticMethodID(env, cls, "onDockIconClick", "()V");
+// 回调函数，调用 Java 方法
+void dockIconClicked() {
+    if (jvm != NULL) {
+        JNIEnv *env;
+        jint res = (*jvm)->AttachCurrentThread(jvm, (void**)&env, NULL);
+        if (res != JNI_OK) {
+            NSLog(@"Failed to attach thread to JVM");
+            return;
+        }
 
-    // 调用设置 Dock 监听器的方法
-    setupDockClickListener();
+        // 获取 Java 对象的类和方法
+        jclass dockListenerClass = (*env)->GetObjectClass(env, dockListenerInstance);
+        if (dockListenerClass == NULL) {
+            NSLog(@"Failed to find DockListener class");
+            return;
+        }
+
+        // 获取 Java 方法 ID
+        jmethodID callbackMethod = (*env)->GetMethodID(env, dockListenerClass, "triggerCallback", "()V");
+        if (callbackMethod == NULL) {
+            NSLog(@"Failed to find triggerCallback method");
+            return;
+        }
+
+        // 调用 Java 端的回调方法
+        (*env)->CallVoidMethod(env, dockListenerInstance, callbackMethod);
+
+        // (*jvm)->DetachCurrentThread(jvm);
+    } else {
+        NSLog(@"JVM is NULL");
+    }
+}
+
+// JNI 函数，用于从 Java 代码中初始化监听器
+JNIEXPORT void JNICALL Java_com_cw_automaster_dock_DockListener_setupDockListener(JNIEnv *env, jobject obj) {
+    // 获取当前 JVM 实例
+    (*env)->GetJavaVM(env, &jvm);
+
+    // 保存 Java 对象的全局引用，确保在回调时使用
+    dockListenerInstance = (*env)->NewGlobalRef(env, obj);
+
+    // 设置 Dock 图标的监听器
+    setupDockIconListener();
 }

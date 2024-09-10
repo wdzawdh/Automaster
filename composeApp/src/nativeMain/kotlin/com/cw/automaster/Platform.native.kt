@@ -1,7 +1,6 @@
 package com.cw.automaster
 
 import com.cw.automaster.emum.PlatformType
-import com.cw.automaster.model.Workflow
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
 import com.cw.automaster.platform.WorkflowManager
