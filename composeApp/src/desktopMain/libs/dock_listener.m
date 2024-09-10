@@ -80,3 +80,9 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_dock_DockListener_setupDockListene
     // 设置 Dock 图标的监听器
     setupDockIconListener();
 }
+
+/*
+clang -I/Users/caowei/Library/Java/JavaVirtualMachines/openjdk-22.0.2/Contents/Home/include \
+      -I/Users/caowei/Library/Java/JavaVirtualMachines/openjdk-22.0.2/Contents/Home/include/darwin \
+      -framework Cocoa -dynamiclib dock_listener.m -o libdocklistener.dylib
+*/
