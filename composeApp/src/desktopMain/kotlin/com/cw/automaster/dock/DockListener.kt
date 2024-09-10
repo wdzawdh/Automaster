@@ -1,14 +1,18 @@
 package com.cw.automaster.dock
 
+import java.nio.file.Paths
+
 class DockListener {
 
     external fun setupDockListener()
 
     // 加载本地库
+    @Suppress("UnsafeDynamicallyLoadedCode")
     companion object {
         init {
-            //System.loadLibrary("docklistener")
-            System.load("/Users/caowei/Documents/KmmProject/Automaster/composeApp/libs/libdocklistener.dylib")
+            System.load(
+                Paths.get("src/desktopMain/libs/libdocklistener.dylib").toAbsolutePath().toString()
+            )
         }
     }
 
