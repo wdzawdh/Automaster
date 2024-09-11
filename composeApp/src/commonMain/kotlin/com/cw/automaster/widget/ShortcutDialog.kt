@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import com.cw.automaster.theme.SecondColor
 import com.cw.automaster.utils.ShortcutUtils
 
+const val SHORTCUT_DIALOG_NAME = "ShortcutDialog"
+
 @Composable
 fun ShortcutDialog(
     shortcutKey: String? = null,

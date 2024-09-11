@@ -1,5 +1,6 @@
 package com.cw.automaster
 
+import SHORTCUT_DIALOG_NAME
 import ShortcutDialog
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -426,7 +427,7 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
                     if (platformType == PlatformType.MAC || platformType == PlatformType.WINDOWS || platformType == PlatformType.LINUX) {
                         DropdownMenuItem(onClick = {
                             expanded = false
-                            DialogManager.show {
+                            DialogManager.show(SHORTCUT_DIALOG_NAME) {
                                 val updateConfig = config ?: Config(workflow.path)
                                 ShortcutDialog(updateConfig.shortcut) { shortcut ->
                                     DialogManager.dismiss()

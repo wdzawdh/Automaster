@@ -1,5 +1,6 @@
 package com.cw.automaster
 
+import SHORTCUT_DIALOG_NAME
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
@@ -66,7 +67,7 @@ private fun initMacShortcut() {
         GlobalScreen.registerNativeHook()
         GlobalScreen.addNativeKeyListener(object : MacShortcutListener() {
             override fun onKeyPressed(key: String) {
-                if (!DialogManager.isShow()) { //判断快捷键非Dialog弹出
+                if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) { //判断快捷键非Dialog弹出
                     ConfigManager.getConfigs().forEach {
                         if (it.shortcut == key) {
                             GlobalScope.launch {
@@ -87,7 +88,7 @@ private fun initMacShortcut() {
 
 private fun initJvmShortcut() {
     JvmShortcutUtils.registerShortcut { key ->
-        if (!DialogManager.isShow()) {
+        if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) {
             ConfigManager.getConfigs().forEach {
                 if (it.shortcut == key) {
                     GlobalScope.launch {
