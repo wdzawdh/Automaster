@@ -12,7 +12,7 @@ import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
 import com.cw.automaster.permission.AccessibilityHelper
 import com.cw.automaster.platform.MacWorkflowManager
-import com.cw.automaster.shortcut.MacOSGlobalKeyListener
+import com.cw.automaster.shortcut.MacShortcutListener
 import com.cw.automaster.tray.TrayManager
 import com.cw.automaster.utils.JvmShortcutUtils
 import com.cw.automaster.utils.isMac
@@ -61,13 +61,12 @@ private fun setDockListener(onDockIconClicked: (() -> Unit)) {
 }
 
 private fun initMacShortcut() {
-    if (!isMac) return
-    if (AccessibilityHelper.hasAccessibilityPermission()) {
+    if (isMac && AccessibilityHelper.hasAccessibilityPermission()) {
         // 注册全局键盘监听器
         GlobalScreen.registerNativeHook()
-        GlobalScreen.addNativeKeyListener(object : MacOSGlobalKeyListener() {
+        GlobalScreen.addNativeKeyListener(object : MacShortcutListener() {
             override fun onKeyPressed(key: String) {
-                if (!DialogManager.isShow()) {
+                if (!DialogManager.isShow()) { //判断快捷键非Dialog弹出
                     ConfigManager.getConfigs().forEach {
                         if (it.shortcut == key) {
                             GlobalScope.launch {
@@ -81,7 +80,8 @@ private fun initMacShortcut() {
             }
         })
     } else {
-        AccessibilityHelper.openAccessibilitySettings()
+        // 降级为Jvm实现，只能在应用前台使用
+        initJvmShortcut()
     }
 }
 

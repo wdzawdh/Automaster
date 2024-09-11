@@ -5,7 +5,7 @@ import com.cw.automaster.getPlatformType
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 
-abstract class MacOSGlobalKeyListener : NativeKeyListener {
+abstract class MacShortcutListener : NativeKeyListener {
 
     override fun nativeKeyPressed(e: NativeKeyEvent) {
         // 在这里处理按键事件
