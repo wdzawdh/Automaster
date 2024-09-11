@@ -10,9 +10,13 @@ import com.cw.automaster.dock.DockListener
 import com.cw.automaster.manager.ConfigManager
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
+import com.cw.automaster.permission.AccessibilityHelper
 import com.cw.automaster.platform.MacWorkflowManager
+import com.cw.automaster.shortcut.MacOSGlobalKeyListener
 import com.cw.automaster.tray.TrayManager
 import com.cw.automaster.utils.JvmShortcutUtils
+import com.cw.automaster.utils.isMac
+import com.github.kwhat.jnativehook.GlobalScreen
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
@@ -41,13 +45,14 @@ fun main() = application {
             isVisible.value = true
         }
         // 快捷键
-        initShortcut()
+        initMacShortcut()
         // UI
         App()
     }
 }
 
 private fun setDockListener(onDockIconClicked: (() -> Unit)) {
+    if (!isMac) return
     GlobalScope.launch {
         val dockListener = DockListener()
         dockListener.onDockIconClicked = onDockIconClicked
@@ -55,7 +60,32 @@ private fun setDockListener(onDockIconClicked: (() -> Unit)) {
     }
 }
 
-private fun initShortcut() {
+private fun initMacShortcut() {
+    if (!isMac) return
+    if (AccessibilityHelper.hasAccessibilityPermission()) {
+        // 注册全局键盘监听器
+        GlobalScreen.registerNativeHook()
+        GlobalScreen.addNativeKeyListener(object : MacOSGlobalKeyListener() {
+            override fun onKeyPressed(key: String) {
+                if (!DialogManager.isShow()) {
+                    ConfigManager.getConfigs().forEach {
+                        if (it.shortcut == key) {
+                            GlobalScope.launch {
+                                LoadingManager.loading()
+                                MacWorkflowManager.runWorkflow(it.path)
+                                LoadingManager.dismiss()
+                            }
+                        }
+                    }
+                }
+            }
+        })
+    } else {
+        AccessibilityHelper.openAccessibilitySettings()
+    }
+}
+
+private fun initJvmShortcut() {
     JvmShortcutUtils.registerShortcut { key ->
         if (!DialogManager.isShow()) {
             ConfigManager.getConfigs().forEach {
