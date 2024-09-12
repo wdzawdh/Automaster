@@ -4,6 +4,7 @@ import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.model.Workflow
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
+import com.cw.automaster.platform.PermissionManager
 import com.cw.automaster.platform.WorkflowManager
 
 actual fun getPlatformType(): PlatformType {
@@ -19,5 +20,9 @@ actual fun getFileSelector(): FileSelector? {
 }
 
 actual fun getConfigStore(): ConfigStore? {
+    return null
+}
+
+actual fun getPermissionManager(): PermissionManager? {
     return null
 }

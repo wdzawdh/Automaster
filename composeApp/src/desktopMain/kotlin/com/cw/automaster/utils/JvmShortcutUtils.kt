@@ -2,24 +2,37 @@ package com.cw.automaster.utils
 
 import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.getPlatformType
+import java.awt.KeyEventDispatcher
 import java.awt.KeyboardFocusManager
 import java.awt.event.KeyEvent
 
 object JvmShortcutUtils {
 
+    private var dispatcher: KeyEventDispatcher? = null
+
     /**
      * 注册快捷键监听
      */
     fun registerShortcut(onKeyPressed: (key: String) -> Boolean) {
+        if (dispatcher != null) return
         val manager = KeyboardFocusManager.getCurrentKeyboardFocusManager()
-        manager.addKeyEventDispatcher { e ->
-            if (e.id == KeyEvent.KEY_PRESSED) {
-                val shortcutKey = getShortcut(e)
-                if (shortcutKey != null) {
-                    return@addKeyEventDispatcher onKeyPressed(shortcutKey)
+        manager.addKeyEventDispatcher(object : KeyEventDispatcher {
+            override fun dispatchKeyEvent(e: KeyEvent): Boolean {
+                if (e.id == KeyEvent.KEY_PRESSED) {
+                    val shortcutKey = getShortcut(e)
+                    if (shortcutKey != null) {
+                        return onKeyPressed(shortcutKey)
+                    }
                 }
+                return false
             }
-            false
+        }.apply { dispatcher = this })
+    }
+
+    fun unregisterShortcut() {
+        if (dispatcher != null) {
+            val manager = KeyboardFocusManager.getCurrentKeyboardFocusManager()
+            manager.removeKeyEventDispatcher(dispatcher)
         }
     }
 

@@ -1,23 +1,19 @@
 package com.cw.automaster
 
-import SHORTCUT_DIALOG_NAME
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.cw.automaster.dock.DockListener
-import com.cw.automaster.manager.ConfigManager
-import com.cw.automaster.manager.DialogManager
-import com.cw.automaster.manager.LoadingManager
+import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.permission.AccessibilityHelper
-import com.cw.automaster.platform.MacWorkflowManager
-import com.cw.automaster.shortcut.MacShortcutListener
+import com.cw.automaster.shortcut.initMacShortcut
 import com.cw.automaster.tray.TrayManager
-import com.cw.automaster.utils.JvmShortcutUtils
-import com.cw.automaster.utils.isMac
-import com.github.kwhat.jnativehook.GlobalScreen
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
@@ -49,11 +45,25 @@ fun main() = application {
         initMacShortcut()
         // UI
         App()
+        // 检查权限
+        checkPermission()
+    }
+}
+
+@Composable
+private fun checkPermission() {
+    val scope = rememberCoroutineScope()
+    SnackbarManager.showMessage(
+        coroutineScope = scope,
+        message = "打开“辅助功能”可以使用全局快捷键",
+        actionLabel = "去打开",
+        duration = SnackbarDuration.Long
+    ) {
+        AccessibilityHelper.openAccessibilitySettings()
     }
 }
 
 private fun setDockListener(onDockIconClicked: (() -> Unit)) {
-    if (!isMac) return
     GlobalScope.launch {
         val dockListener = DockListener()
         dockListener.onDockIconClicked = onDockIconClicked
@@ -61,44 +71,3 @@ private fun setDockListener(onDockIconClicked: (() -> Unit)) {
     }
 }
 
-private fun initMacShortcut() {
-    if (isMac && AccessibilityHelper.hasAccessibilityPermission()) {
-        // 注册全局键盘监听器
-        GlobalScreen.registerNativeHook()
-        GlobalScreen.addNativeKeyListener(object : MacShortcutListener() {
-            override fun onKeyPressed(key: String) {
-                if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) { //判断快捷键非Dialog弹出
-                    ConfigManager.getConfigs().forEach {
-                        if (it.shortcut == key) {
-                            GlobalScope.launch {
-                                LoadingManager.loading()
-                                MacWorkflowManager.runWorkflow(it.path)
-                                LoadingManager.dismiss()
-                            }
-                        }
-                    }
-                }
-            }
-        })
-    } else {
-        // 降级为Jvm实现，只能在应用前台使用
-        initJvmShortcut()
-    }
-}
-
-private fun initJvmShortcut() {
-    JvmShortcutUtils.registerShortcut { key ->
-        if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) {
-            ConfigManager.getConfigs().forEach {
-                if (it.shortcut == key) {
-                    GlobalScope.launch {
-                        LoadingManager.loading()
-                        MacWorkflowManager.runWorkflow(it.path)
-                        LoadingManager.dismiss()
-                    }
-                }
-            }
-        }
-        return@registerShortcut false
-    }
-}

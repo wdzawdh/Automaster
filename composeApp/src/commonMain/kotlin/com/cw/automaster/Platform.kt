@@ -3,6 +3,7 @@ package com.cw.automaster
 import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
+import com.cw.automaster.platform.PermissionManager
 import com.cw.automaster.platform.WorkflowManager
 
 
@@ -17,3 +18,6 @@ expect fun getFileSelector(): FileSelector?
 
 // config
 expect fun getConfigStore(): ConfigStore?
+
+// permission
+expect fun getPermissionManager(): PermissionManager?

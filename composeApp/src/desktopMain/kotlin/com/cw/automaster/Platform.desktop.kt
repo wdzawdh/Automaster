@@ -6,10 +6,12 @@ import com.cw.automaster.platform.FileSelector
 import com.cw.automaster.platform.MacConfigStore
 import com.cw.automaster.platform.WorkflowManager
 import com.cw.automaster.platform.MacFileSelector
+import com.cw.automaster.platform.MacPermissionManager
 import com.cw.automaster.utils.isLinux
 import com.cw.automaster.utils.isMac
 import com.cw.automaster.utils.isWindows
 import com.cw.automaster.platform.MacWorkflowManager
+import com.cw.automaster.platform.PermissionManager
 import java.io.File
 
 actual fun getPlatformType(): PlatformType {
@@ -41,6 +43,13 @@ actual fun getFileSelector(): FileSelector? {
 actual fun getConfigStore(): ConfigStore? {
     if (isMac) {
         return MacConfigStore
+    }
+    return null
+}
+
+actual fun getPermissionManager(): PermissionManager? {
+    if (isMac) {
+        return MacPermissionManager
     }
     return null
 }
