@@ -1,5 +1,6 @@
 package com.cw.automaster
 
+import MessageDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import automaster.composeapp.generated.resources.Res
 import automaster.composeapp.generated.resources.back
+import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.Screen
 import com.cw.automaster.manager.ScreenManager
 import com.cw.automaster.theme.BgColor
@@ -106,7 +108,7 @@ fun SettingsPage() {
                 modifier = Modifier.padding(start = 18.dp, end = 12.dp)
             ) {
                 Text(
-                    "获取“辅助功能”权限",
+                    "全局快捷键",
                     color = TextGrey,
                     fontSize = 14.sp,
                     fontFamily = FontFamily.Monospace
@@ -115,8 +117,18 @@ fun SettingsPage() {
                 Switch(
                     checked = hasPermission,
                     onCheckedChange = {
-                        permissionManager?.requestPermission {
-                            hasPermission = it
+                        DialogManager.show {
+                            MessageDialog(
+                                message = "全局快捷键需要添加“辅助功能”权限",
+                                confirmText = "去添加"
+                            ) { confirm ->
+                                DialogManager.dismiss()
+                                if (confirm) {
+                                    permissionManager?.requestPermission {
+                                        hasPermission = it
+                                    }
+                                }
+                            }
                         }
                     },
                     colors = SwitchDefaults.colors(

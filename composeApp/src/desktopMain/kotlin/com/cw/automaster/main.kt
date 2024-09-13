@@ -12,6 +12,7 @@ import androidx.compose.ui.window.rememberWindowState
 import com.cw.automaster.dock.DockListener
 import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.permission.AccessibilityHelper
+import com.cw.automaster.platform.MacPermissionManager
 import com.cw.automaster.shortcut.initMacShortcut
 import com.cw.automaster.tray.TrayManager
 import kotlinx.coroutines.GlobalScope
@@ -52,14 +53,20 @@ fun main() = application {
 
 @Composable
 private fun checkPermission() {
-    val scope = rememberCoroutineScope()
-    SnackbarManager.showMessage(
-        coroutineScope = scope,
-        message = "打开“辅助功能”可以使用全局快捷键",
-        actionLabel = "去打开",
-        duration = SnackbarDuration.Long
-    ) {
-        AccessibilityHelper.openAccessibilitySettings()
+    if (!MacPermissionManager.checkPermission()) {
+        val scope = rememberCoroutineScope()
+        SnackbarManager.showMessage(
+            coroutineScope = scope,
+            message = "打开“辅助功能”可以使用全局快捷键",
+            actionLabel = "去打开"
+        ) {
+            MacPermissionManager.requestPermission {
+                SnackbarManager.showMessage(
+                    scope,
+                    if (it) "全局快捷键已打开" else "打开失败"
+                )
+            }
+        }
     }
 }
 

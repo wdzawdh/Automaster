@@ -18,6 +18,8 @@ import com.cw.automaster.theme.TextGrey
 fun MessageDialog(
     title: String? = "提示",
     message: String? = null,
+    confirmText: String = "确认",
+    cancelText: String = "取消",
     onClickButton: (confirm: Boolean) -> Unit
 ) {
     AlertDialog(
@@ -33,7 +35,7 @@ fun MessageDialog(
                 ),
                 modifier = Modifier.height(40.dp).padding(bottom = 10.dp)
             ) {
-                Text("确认", fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+                Text(confirmText, fontFamily = FontFamily.Monospace, fontSize = 12.sp)
             }
         },
         dismissButton = {
@@ -45,7 +47,7 @@ fun MessageDialog(
                 ),
                 modifier = Modifier.height(40.dp).padding(bottom = 10.dp)
             ) {
-                Text("取消", fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+                Text(cancelText, fontFamily = FontFamily.Monospace, fontSize = 12.sp)
             }
         }
     )

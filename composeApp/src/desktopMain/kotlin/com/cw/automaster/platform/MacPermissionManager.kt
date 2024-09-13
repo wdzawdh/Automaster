@@ -4,6 +4,8 @@ import MessageDialog
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.permission.AccessibilityHelper
 import com.cw.automaster.shortcut.initMacShortcut
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 
 object MacPermissionManager : PermissionManager {
 
@@ -12,25 +14,12 @@ object MacPermissionManager : PermissionManager {
     }
 
     override fun requestPermission(callback: (success: Boolean) -> Unit) {
+        AccessibilityHelper.openAccessibilitySettings()
+        runBlocking { delay(2000) }
         DialogManager.show {
             MessageDialog(
-                message = "跳转系统设置添加“辅助功能”权限"
-            ) { confirm ->
-                DialogManager.dismiss()
-                if (confirm) {
-                    AccessibilityHelper.openAccessibilitySettings()
-                    showRelaunchDialog(callback)
-                } else {
-                    callback(false)
-                }
-            }
-        }
-    }
-
-    private fun showRelaunchDialog(callback: (success: Boolean) -> Unit) {
-        DialogManager.show {
-            MessageDialog(
-                message = "添加“辅助功能”权限后需要刷新才能生效，是否刷新?"
+                message = "添加“辅助功能”权限后需要刷新配置才能生效，是否刷新?",
+                confirmText = "刷新"
             ) { confirm ->
                 DialogManager.dismiss()
                 if (confirm && checkPermission()) {
