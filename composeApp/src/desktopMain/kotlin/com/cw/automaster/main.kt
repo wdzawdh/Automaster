@@ -1,6 +1,5 @@
 package com.cw.automaster
 
-import androidx.compose.material.SnackbarDuration
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -11,9 +10,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.cw.automaster.dock.DockListener
 import com.cw.automaster.manager.SnackbarManager
-import com.cw.automaster.permission.AccessibilityHelper
 import com.cw.automaster.platform.MacPermissionManager
-import com.cw.automaster.shortcut.initMacShortcut
 import com.cw.automaster.tray.TrayManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -42,17 +39,15 @@ fun main() = application {
         setDockListener {
             isVisible.value = true
         }
-        // 快捷键
-        initMacShortcut()
         // UI
         App()
-        // 检查权限
-        checkPermission()
+        // 快捷键
+        checkMacShortcut()
     }
 }
 
 @Composable
-private fun checkPermission() {
+private fun checkMacShortcut() {
     if (!MacPermissionManager.checkPermission()) {
         val scope = rememberCoroutineScope()
         SnackbarManager.showMessage(

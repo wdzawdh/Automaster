@@ -4,6 +4,8 @@ import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
 import com.cw.automaster.platform.PermissionManager
+import com.cw.automaster.platform.PropertiesManager
+import com.cw.automaster.platform.ShortcutManager
 import com.cw.automaster.platform.WorkflowManager
 
 
@@ -21,3 +23,9 @@ expect fun getConfigStore(): ConfigStore?
 
 // permission
 expect fun getPermissionManager(): PermissionManager?
+
+// shortcut
+expect fun getShortcutManager(): ShortcutManager?
+
+// properties
+expect fun getPropertiesManager(): PropertiesManager?

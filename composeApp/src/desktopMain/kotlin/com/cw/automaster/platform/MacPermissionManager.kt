@@ -3,7 +3,6 @@ package com.cw.automaster.platform
 import MessageDialog
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.permission.AccessibilityHelper
-import com.cw.automaster.shortcut.initMacShortcut
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
@@ -23,7 +22,6 @@ object MacPermissionManager : PermissionManager {
             ) { confirm ->
                 DialogManager.dismiss()
                 if (confirm && checkPermission()) {
-                    initMacShortcut()
                     callback(true)
                 } else {
                     callback(false)

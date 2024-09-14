@@ -5,6 +5,8 @@ import com.cw.automaster.model.Workflow
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
 import com.cw.automaster.platform.PermissionManager
+import com.cw.automaster.platform.PropertiesManager
+import com.cw.automaster.platform.ShortcutManager
 import com.cw.automaster.platform.WorkflowManager
 
 actual fun getPlatformType(): PlatformType {
@@ -24,5 +26,13 @@ actual fun getConfigStore(): ConfigStore? {
 }
 
 actual fun getPermissionManager(): PermissionManager? {
+    return null
+}
+
+actual fun getShortcutManager(): ShortcutManager? {
+    return null
+}
+
+actual fun getPropertiesManager(): PropertiesManager? {
     return null
 }

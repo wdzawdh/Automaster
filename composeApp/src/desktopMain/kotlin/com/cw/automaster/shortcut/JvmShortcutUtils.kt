@@ -1,4 +1,4 @@
-package com.cw.automaster.utils
+package com.cw.automaster.shortcut
 
 import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.getPlatformType
@@ -33,6 +33,7 @@ object JvmShortcutUtils {
         if (dispatcher != null) {
             val manager = KeyboardFocusManager.getCurrentKeyboardFocusManager()
             manager.removeKeyEventDispatcher(dispatcher)
+            dispatcher = null
         }
     }
 

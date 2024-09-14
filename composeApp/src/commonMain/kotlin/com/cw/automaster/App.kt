@@ -1,5 +1,6 @@
 package com.cw.automaster
 
+import SHORTCUT_DIALOG_NAME
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
@@ -12,17 +13,24 @@ import com.cw.automaster.manager.Screen
 import com.cw.automaster.manager.ScreenManager.CurrentScreen
 import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.widget.Loading
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 // global object
 val platformType = getPlatformType()
 val workflowManager = getWorkflowManager()
 val fileSelector = getFileSelector()
 val permissionManager = getPermissionManager()
+val shortcutManager = getShortcutManager()
+val propertiesManager = getPropertiesManager()
 
 @Composable
 fun App() {
     // config
     ConfigManager.init()
+
+    // shortcut
+    registerKeyboard(propertiesManager?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
 
     Scaffold(
         snackbarHost = {
@@ -41,5 +49,24 @@ fun App() {
             LoadingManager.setContent { Loading() }
         }
     )
+}
+
+fun registerKeyboard(global: Boolean) {
+    shortcutManager?.registerKeyEvent(global) { key ->
+        if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) { //判断快捷键非Dialog弹出
+            ConfigManager.getConfigs().forEach {
+                if (it.shortcut == key) {
+                    GlobalScope.launch {
+                        LoadingManager.loading()
+                        workflowManager?.runWorkflow(it.path)
+                        LoadingManager.dismiss()
+                    }
+                    return@registerKeyEvent true
+                }
+            }
+        }
+        return@registerKeyEvent false
+    }
+    propertiesManager?.setBoolean(KEY_GLOBAL_SHORTCUT, global)
 }
 

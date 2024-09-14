@@ -2,28 +2,37 @@ package com.cw.automaster.shortcut
 
 import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.getPlatformType
+import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 
-abstract class MacShortcutListener : NativeKeyListener {
+object MacShortcutUtils {
 
-    override fun nativeKeyPressed(e: NativeKeyEvent) {
-        // 在这里处理按键事件
-        val shortcut = getShortcut(e)
-        if (shortcut != null) {
-            onKeyPressed(shortcut)
+    init {
+        try {
+            GlobalScreen.registerNativeHook()
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    override fun nativeKeyReleased(e: NativeKeyEvent) {
-        // 可选：处理按键释放事件
+    private var nativeKeyListener: NativeKeyListener? = null
+
+    fun registerShortcut(onKeyPressed: (key: String) -> Unit) {
+        GlobalScreen.addNativeKeyListener(object : NativeKeyListener {
+            override fun nativeKeyPressed(nativeEvent: NativeKeyEvent) {
+                val shortcut = getShortcut(nativeEvent)
+                if (shortcut != null) {
+                    onKeyPressed(shortcut)
+                }
+            }
+        }.apply { nativeKeyListener = this })
     }
 
-    override fun nativeKeyTyped(e: NativeKeyEvent) {
-        // 可选：处理键入事件
+    fun unregisterShortcut() {
+        GlobalScreen.removeNativeKeyListener(nativeKeyListener)
+        nativeKeyListener = null
     }
-
-    abstract fun onKeyPressed(key: String)
 
     private fun getShortcut(keyEvent: NativeKeyEvent): String? {
         val keyText = NativeKeyEvent.getKeyText(keyEvent.keyCode)

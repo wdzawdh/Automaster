@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
@@ -27,7 +25,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,7 +99,9 @@ fun SettingsPage() {
                 .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
                 .background(color = Color.White, shape = RoundedCornerShape(8.dp))
         ) {
-            var hasPermission by remember { mutableStateOf(permissionManager?.checkPermission() == true) }
+            var isGlobalKey by remember {
+                mutableStateOf(propertiesManager?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
+            }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 18.dp, end = 12.dp)
@@ -115,20 +114,31 @@ fun SettingsPage() {
                 )
                 Spacer(Modifier.weight(1f))
                 Switch(
-                    checked = hasPermission,
-                    onCheckedChange = {
-                        DialogManager.show {
-                            MessageDialog(
-                                message = "全局快捷键需要添加“辅助功能”权限",
-                                confirmText = "去添加"
-                            ) { confirm ->
-                                DialogManager.dismiss()
-                                if (confirm) {
-                                    permissionManager?.requestPermission {
-                                        hasPermission = it
+                    checked = isGlobalKey,
+                    onCheckedChange = { isOpen ->
+                        if (isOpen) {
+                            if (permissionManager?.checkPermission() == true) {
+                                registerKeyboard(true)
+                                isGlobalKey = true
+                            } else {
+                                DialogManager.show {
+                                    MessageDialog(
+                                        message = "全局快捷键需要添加“辅助功能”权限",
+                                        confirmText = "去添加"
+                                    ) { confirm ->
+                                        DialogManager.dismiss()
+                                        if (confirm) {
+                                            permissionManager?.requestPermission {
+                                                registerKeyboard(true)
+                                                isGlobalKey = it
+                                            }
+                                        }
                                     }
                                 }
                             }
+                        } else {
+                            registerKeyboard(false)
+                            isGlobalKey = false
                         }
                     },
                     colors = SwitchDefaults.colors(
