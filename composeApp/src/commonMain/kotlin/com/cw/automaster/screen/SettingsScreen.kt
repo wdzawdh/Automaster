@@ -1,4 +1,4 @@
-package com.cw.automaster
+package com.cw.automaster.screen
 
 import MessageDialog
 import androidx.compose.foundation.background
@@ -30,9 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import automaster.composeapp.generated.resources.Res
 import automaster.composeapp.generated.resources.back
+import com.cw.automaster.KEY_GLOBAL_SHORTCUT
+import com.cw.automaster.keyValueStore
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.Screen
 import com.cw.automaster.manager.ScreenManager
+import com.cw.automaster.permissionManager
+import com.cw.automaster.registerKeyboard
 import com.cw.automaster.theme.BgColor
 import com.cw.automaster.theme.SecondColor
 import com.cw.automaster.theme.TextGrey

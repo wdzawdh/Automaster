@@ -2,8 +2,8 @@ package com.cw.automaster.manager
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import com.cw.automaster.MainScreen
-import com.cw.automaster.SettingsScreen
+import com.cw.automaster.screen.MainScreen
+import com.cw.automaster.screen.SettingsScreen
 
 enum class Screen {
     MAIN,

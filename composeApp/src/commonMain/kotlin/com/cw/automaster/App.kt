@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.manager.ConfigManager
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
@@ -15,6 +14,7 @@ import com.cw.automaster.manager.Screen
 import com.cw.automaster.manager.ScreenManager.CurrentScreen
 import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.widget.Loading
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -31,7 +31,8 @@ fun App() {
     // config
     ConfigManager.init()
 
-    // shortcut
+    // shortcut & permission
+    checkPermission(rememberCoroutineScope())
     registerKeyboard(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
 
     Scaffold(
@@ -51,35 +52,29 @@ fun App() {
             LoadingManager.setContent { Loading() }
         }
     )
-
-    // mac shortcut permission
-    checkMacPermission()
 }
 
-
-@Composable
-private fun checkMacPermission() {
-    if (platformType == PlatformType.MAC && permissionManager?.checkPermission() != true) {
-        val scope = rememberCoroutineScope()
+private fun checkPermission(scope: CoroutineScope) {
+    if (permissionManager?.checkPermission() != true) {
         SnackbarManager.showMessage(
             coroutineScope = scope,
-            message = "打开“辅助功能”可以使用全局快捷键",
+            message = "打开“辅助功能”可以启用全局快捷键",
             actionLabel = "去打开"
         ) {
             permissionManager?.requestPermission {
-                registerKeyboard(true)
-                SnackbarManager.showMessage(
-                    scope,
-                    if (it) "全局快捷键已打开" else "打开失败"
-                )
+                if (it) {
+                    registerKeyboard(true)
+                    SnackbarManager.showMessage(scope, "全局快捷键已打开")
+                }
             }
         }
+        keyValueStore?.setBoolean(KEY_GLOBAL_SHORTCUT, false)
     }
 }
 
 fun registerKeyboard(global: Boolean) {
     shortcutManager?.registerKeyEvent(global) { key ->
-        if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) { //判断快捷键非Dialog弹出
+        if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) {
             ConfigManager.getConfigs().forEach {
                 if (it.shortcut == key) {
                     GlobalScope.launch {

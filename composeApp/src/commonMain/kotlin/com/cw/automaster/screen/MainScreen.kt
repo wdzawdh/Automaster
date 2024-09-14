@@ -1,11 +1,8 @@
-package com.cw.automaster
+package com.cw.automaster.screen
 
 import SHORTCUT_DIALOG_NAME
 import ShortcutDialog
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
@@ -18,11 +15,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,11 +26,6 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -64,6 +54,7 @@ import automaster.composeapp.generated.resources.task
 import automaster.composeapp.generated.resources.title
 import com.cw.automaster.emum.FileSelectorType
 import com.cw.automaster.emum.PlatformType
+import com.cw.automaster.fileSelector
 import com.cw.automaster.manager.ConfigManager
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
@@ -72,12 +63,13 @@ import com.cw.automaster.manager.ScreenManager
 import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.model.Config
 import com.cw.automaster.model.Workflow
+import com.cw.automaster.platformType
 import com.cw.automaster.theme.BgColor
 import com.cw.automaster.theme.SecondColor
 import com.cw.automaster.theme.TextGrey
 import com.cw.automaster.utils.getCurrentTimestamp
-import com.cw.automaster.widget.Loading
 import com.cw.automaster.widget.TabLayout
+import com.cw.automaster.workflowManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
