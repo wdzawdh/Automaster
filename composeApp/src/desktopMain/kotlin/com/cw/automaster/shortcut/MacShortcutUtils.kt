@@ -8,17 +8,18 @@ import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
 
 object MacShortcutUtils {
 
-    init {
-        try {
-            GlobalScreen.registerNativeHook()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
     private var nativeKeyListener: NativeKeyListener? = null
 
+    private var hasInit = false
+
+    private fun initHook() {
+        if (hasInit) return
+        GlobalScreen.registerNativeHook()
+        hasInit = true
+    }
+
     fun registerShortcut(onKeyPressed: (key: String) -> Unit) {
+        initHook()
         GlobalScreen.addNativeKeyListener(object : NativeKeyListener {
             override fun nativeKeyPressed(nativeEvent: NativeKeyEvent) {
                 val shortcut = getShortcut(nativeEvent)

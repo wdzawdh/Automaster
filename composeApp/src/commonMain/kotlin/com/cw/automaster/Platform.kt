@@ -18,11 +18,11 @@ expect fun getKeyValueStore(): KeyValueStore?
 // config
 expect fun getConfigStore(): ConfigStore?
 
-// workflow
-expect fun getWorkflowManager(): WorkflowManager?
-
 // selector
 expect fun getFileSelector(): FileSelector?
+
+// workflow
+expect fun getWorkflowManager(): WorkflowManager?
 
 // permission
 expect fun getPermissionManager(): PermissionManager?

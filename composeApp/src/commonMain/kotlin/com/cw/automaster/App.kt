@@ -6,6 +6,8 @@ import androidx.compose.material.SnackbarHost
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.manager.ConfigManager
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
@@ -49,6 +51,30 @@ fun App() {
             LoadingManager.setContent { Loading() }
         }
     )
+
+    // mac shortcut permission
+    checkMacPermission()
+}
+
+
+@Composable
+private fun checkMacPermission() {
+    if (platformType == PlatformType.MAC && permissionManager?.checkPermission() != true) {
+        val scope = rememberCoroutineScope()
+        SnackbarManager.showMessage(
+            coroutineScope = scope,
+            message = "打开“辅助功能”可以使用全局快捷键",
+            actionLabel = "去打开"
+        ) {
+            permissionManager?.requestPermission {
+                registerKeyboard(true)
+                SnackbarManager.showMessage(
+                    scope,
+                    if (it) "全局快捷键已打开" else "打开失败"
+                )
+            }
+        }
+    }
 }
 
 fun registerKeyboard(global: Boolean) {
