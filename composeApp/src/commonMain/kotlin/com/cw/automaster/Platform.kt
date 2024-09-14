@@ -12,6 +12,9 @@ import com.cw.automaster.platform.WorkflowManager
 // platform
 expect fun getPlatformType(): PlatformType
 
+// openUrl
+expect fun openUrl(url: String)
+
 // key value
 expect fun getKeyValueStore(): KeyValueStore?
 

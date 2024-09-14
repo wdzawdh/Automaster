@@ -3,7 +3,7 @@ package com.cw.automaster.manager
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.cw.automaster.screen.MainScreen
-import com.cw.automaster.screen.SettingsScreen
+import com.cw.automaster.screen.ToolScreen
 
 enum class Screen {
     MAIN,
@@ -22,7 +22,7 @@ object ScreenManager {
             }
 
             Screen.SETTING -> {
-                SettingsScreen()
+                ToolScreen()
             }
         }
     }

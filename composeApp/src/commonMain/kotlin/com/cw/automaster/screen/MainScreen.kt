@@ -66,7 +66,7 @@ import com.cw.automaster.model.Workflow
 import com.cw.automaster.platformType
 import com.cw.automaster.theme.BgColor
 import com.cw.automaster.theme.SecondColor
-import com.cw.automaster.theme.TextGrey
+import com.cw.automaster.theme.TextBlack
 import com.cw.automaster.utils.getCurrentTimestamp
 import com.cw.automaster.widget.TabLayout
 import com.cw.automaster.workflowManager
@@ -296,7 +296,7 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
             Text(
                 text = workflow.name,
                 fontSize = 16.sp,
-                color = TextGrey,
+                color = TextBlack,
                 fontWeight = FontWeight.Bold
             )
             if (shortcut != null) {

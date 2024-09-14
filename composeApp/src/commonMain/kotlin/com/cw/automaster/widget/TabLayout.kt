@@ -22,7 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cw.automaster.theme.SecondColor
-import com.cw.automaster.theme.TextGrey
+import com.cw.automaster.theme.TextBlack
 
 @Composable
 fun TabLayout(
@@ -61,7 +61,7 @@ fun TabLayout(
                     title,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextGrey,
+                    color = TextBlack,
                     modifier = Modifier.padding(vertical = 6.dp)
                 )
             }

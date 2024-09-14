@@ -35,3 +35,6 @@ actual fun getShortcutManager(): ShortcutManager? {
 actual fun getKeyValueStore(): KeyValueStore? {
     return null
 }
+
+actual fun openUrl(url: String) {
+}

@@ -11,7 +11,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cw.automaster.theme.SecondColor
-import com.cw.automaster.theme.TextGrey
+import com.cw.automaster.theme.TextBlack
 
 
 @Composable
@@ -24,8 +24,8 @@ fun MessageDialog(
 ) {
     AlertDialog(
         onDismissRequest = { onClickButton(false) },
-        title = { if (title != null) Text(title, color = TextGrey, fontSize = 16.sp) },
-        text = { if (message != null) Text(message, color = TextGrey, fontSize = 14.sp) },
+        title = { if (title != null) Text(title, color = TextBlack, fontSize = 16.sp) },
+        text = { if (message != null) Text(message, color = TextBlack, fontSize = 14.sp) },
         confirmButton = {
             Button(
                 onClick = { onClickButton(true) },

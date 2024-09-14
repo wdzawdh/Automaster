@@ -16,6 +16,8 @@ import com.cw.automaster.platform.MacWorkflowManager
 import com.cw.automaster.platform.PermissionManager
 import com.cw.automaster.platform.KeyValueStore
 import com.cw.automaster.platform.ShortcutManager
+import java.awt.Desktop
+import java.net.URI
 
 actual fun getPlatformType(): PlatformType {
     return if (isMac) {
@@ -69,4 +71,17 @@ actual fun getKeyValueStore(): KeyValueStore? {
         return MacKeyValueStore
     }
     return null
+}
+
+actual fun openUrl(url: String) {
+    try {
+        if (Desktop.isDesktopSupported()) {
+            val desktop = Desktop.getDesktop()
+            if (desktop.isSupported(Desktop.Action.BROWSE)) {
+                desktop.browse(URI(url))
+            }
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }
