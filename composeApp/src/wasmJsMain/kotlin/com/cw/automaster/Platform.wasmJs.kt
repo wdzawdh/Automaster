@@ -1,11 +1,10 @@
 package com.cw.automaster
 
 import com.cw.automaster.emum.PlatformType
-import com.cw.automaster.model.Workflow
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
 import com.cw.automaster.platform.PermissionManager
-import com.cw.automaster.platform.PropertiesManager
+import com.cw.automaster.platform.KeyValueStore
 import com.cw.automaster.platform.ShortcutManager
 import com.cw.automaster.platform.WorkflowManager
 
@@ -33,6 +32,6 @@ actual fun getShortcutManager(): ShortcutManager? {
     return null
 }
 
-actual fun getPropertiesManager(): PropertiesManager? {
+actual fun getKeyValueStore(): KeyValueStore? {
     return null
 }

@@ -100,7 +100,7 @@ fun SettingsPage() {
                 .background(color = Color.White, shape = RoundedCornerShape(8.dp))
         ) {
             var isGlobalKey by remember {
-                mutableStateOf(propertiesManager?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
+                mutableStateOf(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,

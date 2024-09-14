@@ -1,6 +1,6 @@
 package com.cw.automaster.platform
 
-interface PropertiesManager {
+interface KeyValueStore {
     // 读取 Int 值
     fun getInt(key: String, defaultValue: Int = 0): Int
 

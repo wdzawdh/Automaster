@@ -22,7 +22,7 @@ val workflowManager = getWorkflowManager()
 val fileSelector = getFileSelector()
 val permissionManager = getPermissionManager()
 val shortcutManager = getShortcutManager()
-val propertiesManager = getPropertiesManager()
+val keyValueStore = getKeyValueStore()
 
 @Composable
 fun App() {
@@ -30,7 +30,7 @@ fun App() {
     ConfigManager.init()
 
     // shortcut
-    registerKeyboard(propertiesManager?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
+    registerKeyboard(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
 
     Scaffold(
         snackbarHost = {
@@ -67,6 +67,6 @@ fun registerKeyboard(global: Boolean) {
         }
         return@registerKeyEvent false
     }
-    propertiesManager?.setBoolean(KEY_GLOBAL_SHORTCUT, global)
+    keyValueStore?.setBoolean(KEY_GLOBAL_SHORTCUT, global)
 }
 

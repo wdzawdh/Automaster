@@ -5,7 +5,7 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.Properties
 
-object MacPropertiesManager : PropertiesManager {
+object MacKeyValueStore : KeyValueStore {
     private val configFile =
         File(System.getProperty("user.home"), ".automaster/setting.properties")
 

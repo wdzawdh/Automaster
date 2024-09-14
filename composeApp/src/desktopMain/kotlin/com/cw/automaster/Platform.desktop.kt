@@ -7,16 +7,15 @@ import com.cw.automaster.platform.MacConfigStore
 import com.cw.automaster.platform.WorkflowManager
 import com.cw.automaster.platform.MacFileSelector
 import com.cw.automaster.platform.MacPermissionManager
-import com.cw.automaster.platform.MacPropertiesManager
+import com.cw.automaster.platform.MacKeyValueStore
 import com.cw.automaster.platform.MacShortcutManger
 import com.cw.automaster.utils.isLinux
 import com.cw.automaster.utils.isMac
 import com.cw.automaster.utils.isWindows
 import com.cw.automaster.platform.MacWorkflowManager
 import com.cw.automaster.platform.PermissionManager
-import com.cw.automaster.platform.PropertiesManager
+import com.cw.automaster.platform.KeyValueStore
 import com.cw.automaster.platform.ShortcutManager
-import java.io.File
 
 actual fun getPlatformType(): PlatformType {
     return if (isMac) {
@@ -65,9 +64,9 @@ actual fun getShortcutManager(): ShortcutManager? {
     return null
 }
 
-actual fun getPropertiesManager(): PropertiesManager? {
+actual fun getKeyValueStore(): KeyValueStore? {
     if (isMac) {
-        return MacPropertiesManager
+        return MacKeyValueStore
     }
     return null
 }
