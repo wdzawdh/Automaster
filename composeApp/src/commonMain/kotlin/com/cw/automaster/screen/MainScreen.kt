@@ -301,14 +301,14 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
             if (!name.isNullOrEmpty()) {
                 Text(
                     text = "${config.name} (${workflow.name})",
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     color = TextBlack,
                     fontWeight = FontWeight.Bold
                 )
             } else {
                 Text(
                     text = workflow.name,
-                    fontSize = 16.sp,
+                    fontSize = 15.sp,
                     color = TextBlack,
                     fontWeight = FontWeight.Bold
                 )

@@ -14,9 +14,9 @@ androidx-test-junit = "1.2.1"
 compose-plugin = "1.6.11"
 jnativehook = "2.2.2"
 junit = "4.13.2"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 kotlinxDatetime = "0.6.0"
-kotlinxSerializationJson = "1.5.0"
+kotlinxSerializationJson = "1.7.1"
 
 [libraries]
 jnativehook = { module = "com.github.kwhat:jnativehook", version.ref = "jnativehook" }
