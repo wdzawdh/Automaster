@@ -35,6 +35,7 @@ import automaster.composeapp.generated.resources.Res
 import automaster.composeapp.generated.resources.back
 import automaster.composeapp.generated.resources.bug
 import automaster.composeapp.generated.resources.logo
+import com.cw.automaster.BuildConfig
 import com.cw.automaster.KEY_GLOBAL_SHORTCUT
 import com.cw.automaster.URL_NEW_ISSUES
 import com.cw.automaster.keyValueStore
@@ -201,7 +202,7 @@ private fun AboutScreen() {
                     modifier = Modifier.padding(bottom = 12.dp)
                 )
                 Text(
-                    "1.0.0",
+                    BuildConfig.VERSION_NAME,
                     fontSize = 15.sp,
                     color = TextGrey,
                 )

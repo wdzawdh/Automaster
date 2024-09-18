@@ -52,6 +52,10 @@ kotlin {
     }
 
     sourceSets {
+        val commonMain by getting {
+            kotlin.srcDir("build/generated/buildConfig")
+        }
+
         val desktopMain by getting
 
         androidMain.dependencies {
@@ -130,4 +134,31 @@ compose.desktop {
             }
         }
     }
+}
+
+tasks.register("generateBuildConfig") {
+    val outputDir = layout.buildDirectory.dir("generated/buildConfig")
+    val versionName = project.findProperty("VERSION_NAME") ?: "Unknown"
+    inputs.property("versionName", versionName)
+    outputs.dir(outputDir)
+
+    doLast {
+        val buildConfigDir = outputDir.get().asFile
+        buildConfigDir.mkdirs()
+
+        val buildConfigFile = buildConfigDir.resolve("BuildConfig.kt")
+        buildConfigFile.writeText(
+            """
+            package com.cw.automaster
+
+            object BuildConfig {
+                const val VERSION_NAME = "$versionName"
+            }
+            """.trimIndent()
+        )
+    }
+}
+
+tasks.named("generateComposeResClass") {
+    dependsOn("generateBuildConfig")
 }
