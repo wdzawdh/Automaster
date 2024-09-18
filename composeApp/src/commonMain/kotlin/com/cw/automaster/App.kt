@@ -35,23 +35,25 @@ fun App() {
     checkPermission(rememberCoroutineScope())
     registerKeyboard(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
 
-    Scaffold(
-        snackbarHost = {
-            // snack bar
-            SnackbarHost(SnackbarManager.getSnackbarHostState())
-        },
-        content = {
-            // screen
-            CurrentScreen(remember { mutableStateOf(Screen.MAIN) })
-            // dialog
-            val dialogState = remember { mutableStateOf(false) }
-            DialogManager.getContent(dialogState)?.invoke()
-            // loading
-            val loadingState = remember { mutableStateOf(false) }
-            LoadingManager.getContent(loadingState)?.invoke()
-            LoadingManager.setContent { Loading() }
-        }
-    )
+    Theme {
+        Scaffold(
+            snackbarHost = {
+                // snack bar
+                SnackbarHost(SnackbarManager.getSnackbarHostState())
+            },
+            content = {
+                // screen
+                CurrentScreen(remember { mutableStateOf(Screen.MAIN) })
+                // dialog
+                val dialogState = remember { mutableStateOf(false) }
+                DialogManager.getContent(dialogState)?.invoke()
+                // loading
+                val loadingState = remember { mutableStateOf(false) }
+                LoadingManager.getContent(loadingState)?.invoke()
+                LoadingManager.setContent { Loading() }
+            }
+        )
+    }
 }
 
 private fun checkPermission(scope: CoroutineScope) {

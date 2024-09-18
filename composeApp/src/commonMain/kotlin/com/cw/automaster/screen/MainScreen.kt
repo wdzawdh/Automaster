@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,9 +66,12 @@ import com.cw.automaster.model.Config
 import com.cw.automaster.model.Workflow
 import com.cw.automaster.platformType
 import com.cw.automaster.theme.BgColor
-import com.cw.automaster.theme.SecondColor
+import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.theme.TextBlack
+import com.cw.automaster.theme.TextGrey
 import com.cw.automaster.utils.getCurrentTimestamp
+import com.cw.automaster.widget.ALIAS_DIALOG_NAME
+import com.cw.automaster.widget.TextFieldDialog
 import com.cw.automaster.widget.TabLayout
 import com.cw.automaster.workflowManager
 import kotlinx.coroutines.GlobalScope
@@ -129,13 +133,13 @@ fun TopBar(onWorkflowUpdate: () -> Unit) {
             painter = painterResource(Res.drawable.logo),
             contentDescription = "logo",
             modifier = Modifier.height(25.dp).wrapContentWidth(),
-            tint = SecondColor
+            tint = ThemeColor
         )
         Icon(
             painter = painterResource(Res.drawable.title),
             contentDescription = "title",
             modifier = Modifier.height(30.dp).wrapContentWidth(),
-            tint = SecondColor
+            tint = ThemeColor
         )
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
@@ -278,7 +282,7 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
 
     Row(
         modifier = Modifier.fillMaxWidth()
-            .padding(start = 12.dp, end = 12.dp, top = 2.dp, bottom = 2.dp),
+            .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // 图标
@@ -286,25 +290,36 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
             painter = painterResource(Res.drawable.task),
             contentDescription = "task",
             modifier = Modifier.size(40.dp).padding(end = 8.dp),
-            tint = SecondColor
+            tint = ThemeColor
         )
 
         // 项目名称和路径
         val config = ConfigManager.getConfigByPath(workflow.path)
         val shortcut = config?.shortcut
+        val name = config?.name
         Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = workflow.name,
-                fontSize = 16.sp,
-                color = TextBlack,
-                fontWeight = FontWeight.Bold
-            )
+            if (!name.isNullOrEmpty()) {
+                Text(
+                    text = "${config.name} (${workflow.name})",
+                    fontSize = 16.sp,
+                    color = TextBlack,
+                    fontWeight = FontWeight.Bold
+                )
+            } else {
+                Text(
+                    text = workflow.name,
+                    fontSize = 16.sp,
+                    color = TextBlack,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             if (shortcut != null) {
                 Text(
                     text = shortcut,
                     fontSize = 14.sp,
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Bold
+                    color = TextGrey,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 0.sp
                 )
             }
         }
@@ -317,7 +332,7 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
                 modifier = Modifier.size(20.dp),
                 painter = painterResource(Res.drawable.more),
                 contentDescription = "more",
-                tint = SecondColor
+                tint = ThemeColor
             )
         }
 
@@ -348,6 +363,21 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
                         onWorkflowUpdate()
                     }) {
                         Text("删除", fontSize = 14.sp)
+                    }
+                    DropdownMenuItem(onClick = {
+                        expanded = false
+                        DialogManager.show(ALIAS_DIALOG_NAME) {
+                            val updateConfig = config ?: Config(workflow.path)
+                            TextFieldDialog("设置别名", updateConfig.name) {
+                                DialogManager.dismiss()
+                                updateConfig.name = it
+                                ConfigManager.addOrUpdateConfig(updateConfig)
+                                workflow.lastModified = getCurrentTimestamp()
+                                onWorkflowUpdate()
+                            }
+                        }
+                    }) {
+                        Text("设置别名", fontSize = 14.sp)
                     }
                     DropdownMenuItem(onClick = {
                         expanded = false

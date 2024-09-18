@@ -1,12 +1,10 @@
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -17,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cw.automaster.theme.SecondColor
+import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.utils.ShortcutUtils
 
 const val SHORTCUT_DIALOG_NAME = "ShortcutDialog"
@@ -60,7 +56,6 @@ fun ShortcutDialog(
                 Text(
                     text = keyString ?: "按下快捷键",
                     fontSize = 20.sp,
-                    fontFamily = FontFamily.SansSerif
                 )
             }
 
@@ -70,27 +65,23 @@ fun ShortcutDialog(
             }
         },
         confirmButton = {
-            Button(
+            TextButton(
                 onClick = { onShortcutSet(keyString) },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = SecondColor,
-                    contentColor = Color.White
-                ),
-                modifier = Modifier.height(40.dp).padding(bottom = 10.dp)
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = ThemeColor
+                )
             ) {
-                Text("保存", fontFamily = FontFamily.SansSerif)
+                Text("保存")
             }
         },
         dismissButton = {
-            Button(
+            TextButton(
                 onClick = { onShortcutSet(null) },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFF5F5F5),
-                    contentColor = Color.Black
-                ),
-                modifier = Modifier.height(40.dp).padding(bottom = 10.dp)
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = ThemeColor
+                )
             ) {
-                Text("取消", fontFamily = FontFamily.SansSerif)
+                Text("取消")
             }
         }
     )

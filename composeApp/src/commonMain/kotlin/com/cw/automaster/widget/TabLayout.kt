@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.cw.automaster.theme.SecondColor
+import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.theme.TextBlack
 
 @Composable
@@ -33,7 +33,7 @@ fun TabLayout(
 ) {
     ScrollableTabRow(selectedTabIndex = selectedTab,
         modifier = modifier.then(Modifier.padding(5.dp)),
-        contentColor = SecondColor,
+        contentColor = ThemeColor,
         backgroundColor = Color.Transparent,
         edgePadding = 0.dp,
         divider = { },

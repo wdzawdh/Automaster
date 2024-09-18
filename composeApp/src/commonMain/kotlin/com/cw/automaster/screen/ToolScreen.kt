@@ -46,11 +46,11 @@ import com.cw.automaster.openUrl
 import com.cw.automaster.permissionManager
 import com.cw.automaster.registerKeyboard
 import com.cw.automaster.theme.BgColor
-import com.cw.automaster.theme.SecondColor
+import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.theme.TextBlack
 import com.cw.automaster.theme.TextBlue
 import com.cw.automaster.theme.TextGrey
-import com.cw.automaster.theme.ThemeColor
+import com.cw.automaster.theme.SecondaryColor
 import com.cw.automaster.widget.TabLayout
 import org.jetbrains.compose.resources.painterResource
 
@@ -76,12 +76,12 @@ fun ToolPage() {
                 modifier = Modifier.size(15.dp),
                 painter = painterResource(Res.drawable.back),
                 contentDescription = "back",
-                tint = SecondColor
+                tint = ThemeColor
             )
             Text(
                 "工具",
                 fontSize = 12.sp,
-                color = SecondColor,
+                color = ThemeColor,
                 modifier = Modifier.padding(start = 5.dp, end = 5.dp)
             )
         }
@@ -134,7 +134,6 @@ private fun SettingScreen() {
                 "全局快捷键",
                 color = TextBlack,
                 fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace
             )
             Spacer(Modifier.weight(1f))
             Switch(
@@ -166,7 +165,7 @@ private fun SettingScreen() {
                     }
                 },
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = SecondColor, // 开启时开关圆点颜色
+                    checkedThumbColor = ThemeColor, // 开启时开关圆点颜色
                 )
             )
         }
@@ -189,7 +188,6 @@ private fun AboutScreen() {
                 painter = painterResource(Res.drawable.logo),
                 contentDescription = "logo",
                 modifier = Modifier.height(80.dp).wrapContentWidth().padding(start = 15.dp),
-                tint = ThemeColor
             )
             Column(
                 modifier = Modifier.padding(horizontal = 20.dp)

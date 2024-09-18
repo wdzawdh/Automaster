@@ -2,7 +2,6 @@ package com.cw.automaster.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -11,8 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.cw.automaster.theme.SecondColor
-import com.cw.automaster.theme.ThemeColor
+import com.cw.automaster.theme.SecondaryColor
 
 @Composable
 fun Loading() {
@@ -29,7 +27,7 @@ fun Loading() {
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator(
-                color = ThemeColor,
+                color = SecondaryColor,
                 strokeWidth = 3.dp
             )
         }
