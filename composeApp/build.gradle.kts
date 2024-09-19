@@ -166,9 +166,9 @@ tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
     dependsOn("generateBuildConfig")
 }
 
-// ------------------------------打包mac时将dylib库打入包中--------------------------------------------
+// ------------------------------打包app时将dylib库打入包中--------------------------------------------
 tasks.register<Copy>("copyPackageLibs") {
-    from(".")
+    from("$buildDir/libs")
     include("*.dylib")
     into("$buildDir/compose/tmp/main/runtime/lib")
     dependsOn("compileDynamicLibs")
@@ -177,6 +177,16 @@ tasks.matching { it.name == "prepareAppResources" }.configureEach {
     dependsOn("copyPackageLibs")
 }
 
+// ----------------------desktopRun时将dylib库加到java.library.path-----------------------------------
+tasks.register<Copy>("copyRunLibs") {
+    from("$buildDir/libs")
+    include("*.dylib")
+    into("${System.getProperty("user.home")}/Library/Java/Extensions")
+    dependsOn("compileDynamicLibs")
+}
+tasks.matching { it.name == "desktopRun" }.configureEach {
+    dependsOn("copyRunLibs")
+}
 
 // -------------------------------编译前打包dylib动态库------------------------------------------------
 val sourceDir = file("src/desktopMain/jni")
@@ -184,7 +194,7 @@ val compileTasks = mutableListOf<TaskProvider<Exec>>()
 val sourceFiles = sourceDir.listFiles { file -> file.extension == "m" }?.toList() ?: emptyList()
 sourceFiles.forEach { sourceFile ->
     val libName = "lib${sourceFile.nameWithoutExtension}.dylib"
-    val outputDir = file("${System.getProperty("user.home")}/Library/Java/Extensions")
+    val outputDir = file("$buildDir/libs")
     val outputLib = file("${outputDir}/${libName}")
     val compileTask = tasks.register<Exec>("compile${sourceFile.nameWithoutExtension}DynamicLib") {
         commandLine = listOf(
