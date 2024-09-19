@@ -4,7 +4,7 @@ package com.cw.automaster.permission
 @Suppress("UnsafeDynamicallyLoadedCode")
 object AccessibilityHelper {
     init {
-        System.loadLibrary("accessibilityhelper")
+        System.loadLibrary("accessibility_helper")
     }
 
     @JvmStatic

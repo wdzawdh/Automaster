@@ -139,7 +139,7 @@ compose.desktop {
     }
 }
 
-// 创建BuildConfig获取配置
+// ------------------------------创建BuildConfig获取配置----------------------------------------------
 tasks.register("generateBuildConfig") {
     val outputDir = layout.buildDirectory.dir("generated/buildConfig")
     val versionName = project.findProperty("VERSION_NAME") ?: "Unknown"
@@ -166,12 +166,52 @@ tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
     dependsOn("generateBuildConfig")
 }
 
-// 打包mac时将dylib库打入包中
+// ------------------------------打包mac时将dylib库打入包中--------------------------------------------
 tasks.register<Copy>("copyPackageLibs") {
     from(".")
     include("*.dylib")
     into("$buildDir/compose/tmp/main/runtime/lib")
+    dependsOn("compileDynamicLibs")
 }
 tasks.matching { it.name == "prepareAppResources" }.configureEach {
     dependsOn("copyPackageLibs")
+}
+
+
+// -------------------------------编译前打包dylib动态库------------------------------------------------
+val sourceDir = file("src/desktopMain/jni")
+val compileTasks = mutableListOf<TaskProvider<Exec>>()
+val sourceFiles = sourceDir.listFiles { file -> file.extension == "m" }?.toList() ?: emptyList()
+sourceFiles.forEach { sourceFile ->
+    val libName = "lib${sourceFile.nameWithoutExtension}.dylib"
+    val outputDir = file(".")
+    val outputLib = file("${outputDir}/${libName}")
+    val compileTask = tasks.register<Exec>("compile${sourceFile.nameWithoutExtension}DynamicLib") {
+        commandLine = listOf(
+            "clang", "-dynamiclib", "-o", outputLib.absolutePath, sourceFile.absolutePath,
+            "-I${System.getenv("JAVA_HOME")}/include",
+            "-I${System.getenv("JAVA_HOME")}/include/darwin",
+            "-framework", "Cocoa"
+        )
+        // 检查是否需要重新编译
+        outputs.file(outputLib)
+        inputs.file(sourceFile)
+        outputs.upToDateWhen {
+            outputLib.exists() && sourceFile.lastModified() <= outputLib.lastModified()
+        }
+        // 创建输出目录
+        doFirst {
+            outputDir.mkdirs()
+        }
+    }
+    // 添加到编译任务列表
+    compileTasks.add(compileTask)
+}
+// 注册compileDynamicLibs任务
+tasks.register("compileDynamicLibs") {
+    dependsOn(compileTasks)
+}
+// 让其他任务依赖compileDynamicLibs任务
+tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
+    dependsOn("compileDynamicLibs")
 }

@@ -8,7 +8,7 @@ class DockListener {
     @Suppress("UnsafeDynamicallyLoadedCode")
     companion object {
         init {
-            System.loadLibrary("docklistener")
+            System.loadLibrary("dock_listener")
         }
     }
 
