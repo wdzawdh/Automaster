@@ -184,7 +184,7 @@ val compileTasks = mutableListOf<TaskProvider<Exec>>()
 val sourceFiles = sourceDir.listFiles { file -> file.extension == "m" }?.toList() ?: emptyList()
 sourceFiles.forEach { sourceFile ->
     val libName = "lib${sourceFile.nameWithoutExtension}.dylib"
-    val outputDir = file(".")
+    val outputDir = file("${System.getProperty("user.home")}/Library/Java/Extensions")
     val outputLib = file("${outputDir}/${libName}")
     val compileTask = tasks.register<Exec>("compile${sourceFile.nameWithoutExtension}DynamicLib") {
         commandLine = listOf(
