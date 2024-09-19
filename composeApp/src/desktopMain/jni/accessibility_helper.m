@@ -21,3 +21,10 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_permission_AccessibilityHelper_ope
         NSLog(@"Failed to open Accessibility Settings.");
     }
 }
+
+/*
+clang -dynamiclib accessibility_helper.m -o libaccessibility_helper.dylib \
+  -I"$JAVA_HOME/include" \
+  -I"$JAVA_HOME/include/darwin" \
+  -framework Cocoa
+*/

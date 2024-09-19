@@ -1,7 +1,5 @@
 package com.cw.automaster.dock
 
-import java.nio.file.Paths
-
 class DockListener {
 
     external fun setupDockListener()
@@ -10,9 +8,7 @@ class DockListener {
     @Suppress("UnsafeDynamicallyLoadedCode")
     companion object {
         init {
-            System.load(
-                Paths.get("src/desktopMain/libs/libdocklistener.dylib").toAbsolutePath().toString()
-            )
+            System.loadLibrary("docklistener")
         }
     }
 

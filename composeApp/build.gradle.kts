@@ -1,7 +1,6 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
@@ -13,7 +12,6 @@ plugins {
 }
 
 kotlin {
-    @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         moduleName = "composeApp"
         browser {
@@ -129,13 +127,19 @@ compose.desktop {
             packageVersion = "1.0.0"
 
             macOS {
+                bundleID = "com.cw.automaster"
                 iconFile.set(project.file("launcher/logo.icns"))
                 dockName = packageName
+                /*signing {
+                    sign.set(true)
+                    identity = "Developer ID Application: Your Name (Team ID)"
+                }*/
             }
         }
     }
 }
 
+// 创建BuildConfig获取配置
 tasks.register("generateBuildConfig") {
     val outputDir = layout.buildDirectory.dir("generated/buildConfig")
     val versionName = project.findProperty("VERSION_NAME") ?: "Unknown"
@@ -158,7 +162,16 @@ tasks.register("generateBuildConfig") {
         )
     }
 }
-
-tasks.named("generateComposeResClass") {
+tasks.matching { it.name.startsWith("compileKotlin") }.configureEach {
     dependsOn("generateBuildConfig")
+}
+
+// 打包mac时将dylib库打入包中
+tasks.register<Copy>("copyPackageLibs") {
+    from(".")
+    include("*.dylib")
+    into("$buildDir/compose/tmp/main/runtime/lib")
+}
+tasks.matching { it.name == "prepareAppResources" }.configureEach {
+    dependsOn("copyPackageLibs")
 }

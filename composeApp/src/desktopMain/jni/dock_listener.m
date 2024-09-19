@@ -82,7 +82,8 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_dock_DockListener_setupDockListene
 }
 
 /*
-clang -I/Users/caowei/Library/Java/JavaVirtualMachines/openjdk-22.0.2/Contents/Home/include \
-      -I/Users/caowei/Library/Java/JavaVirtualMachines/openjdk-22.0.2/Contents/Home/include/darwin \
-      -framework Cocoa -dynamiclib dock_listener.m -o libdocklistener.dylib
+clang -dynamiclib dock_listener.m -o libdocklistener.dylib \
+  -I"$JAVA_HOME/include" \
+  -I"$JAVA_HOME/include/darwin" \
+  -framework Cocoa
 */

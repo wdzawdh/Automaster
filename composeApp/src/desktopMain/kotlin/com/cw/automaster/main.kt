@@ -1,17 +1,12 @@
 package com.cw.automaster
 
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.cw.automaster.dock.DockListener
-import com.cw.automaster.manager.SnackbarManager
-import com.cw.automaster.platform.MacPermissionManager
-import com.cw.automaster.platform.MacShortcutManger
 import com.cw.automaster.tray.TrayManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
