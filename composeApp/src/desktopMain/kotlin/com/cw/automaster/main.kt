@@ -7,6 +7,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.cw.automaster.dock.DockListener
+import com.cw.automaster.platform.MacWorkflowManager
 import com.cw.automaster.tray.TrayManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -17,7 +18,7 @@ fun main() = application {
     val isVisible = remember { mutableStateOf(true) }
 
     // Tray
-    TrayManager.initTray()
+    MacWorkflowManager.initTray()
 
     val windowState = rememberWindowState(
         width = 450.dp,  // 设置窗口的默认宽度

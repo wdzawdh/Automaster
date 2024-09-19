@@ -1,6 +1,5 @@
 package com.cw.automaster.tray
 
-import com.cw.automaster.platform.MacWorkflowManager
 import java.awt.AWTException
 import java.awt.MenuItem
 import java.awt.PopupMenu
@@ -12,7 +11,7 @@ object TrayManager {
     private val popupMenu by lazy { PopupMenu() }
     private var hasInit = false
 
-    fun initTray() {
+    private fun initMenu() {
         if (hasInit || !SystemTray.isSupported()) {
             return
         }
@@ -22,12 +21,6 @@ object TrayManager {
                 ImageIO.read(object {}.javaClass.getResource("/tray.png"))
             )
             SystemTray.getSystemTray().add(trayIcon.apply { popupMenu = TrayManager.popupMenu })
-            removeAllItem()
-            MacWorkflowManager.getAllWorkflows().forEach {
-                addMenuItem(it.name) {
-                    MacWorkflowManager.runWorkflow(it.path)
-                }
-            }
             hasInit = true
         } catch (e: AWTException) {
             e.printStackTrace()
@@ -35,6 +28,7 @@ object TrayManager {
     }
 
     fun addMenuItem(item: String, onClick: () -> Unit) {
+        initMenu()
         popupMenu.add(
             MenuItem(item).apply {
                 addActionListener {
@@ -45,6 +39,7 @@ object TrayManager {
     }
 
     fun removeAllItem() {
+        initMenu()
         popupMenu.removeAll()
     }
 }

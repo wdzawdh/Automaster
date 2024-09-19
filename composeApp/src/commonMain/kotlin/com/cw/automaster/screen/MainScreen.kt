@@ -240,17 +240,19 @@ fun SearchBar(
                     }
                 },
                 singleLine = true,
-                modifier = Modifier.background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(8.dp)
-                )
-                    .padding(8.dp)
-                    .focusRequester(focusRequester),
+                modifier = Modifier.padding(8.dp).width(150.dp).focusRequester(focusRequester),
             ) {
-                if (searchText.isEmpty()) {
-                    Text("搜索Workflow...", color = Color.Gray, fontSize = 12.sp)
+                Box(contentAlignment = Alignment.CenterStart) {
+                    if (searchText.isEmpty()) {
+                        Text(
+                            "搜索Workflow...",
+                            color = Color.Gray,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                    }
+                    it()
                 }
-                it()
             }
         }
     }
@@ -360,6 +362,7 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
                     DropdownMenuItem(onClick = {
                         expanded = false
                         workflowManager?.deleteWorkflow(workflow.path)
+                        ConfigManager.deleteConfig(workflow.path)
                         onWorkflowUpdate()
                     }) {
                         Text("删除", fontSize = 14.sp)

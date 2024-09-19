@@ -9,11 +9,16 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import kotlin.system.exitProcess
 
 object MacWorkflowManager : WorkflowManager {
 
     private val workflowDirectory =
         File(System.getProperty("user.home"), ".automaster/workflows/local")
+
+    fun initTray() {
+        setWorkflowTray(getAllWorkflows())
+    }
 
     /**
      * 获取所有的 Workflow
@@ -45,7 +50,7 @@ object MacWorkflowManager : WorkflowManager {
         } else {
             throw IOException("Invalid workflow file.")
         }
-        refreshTray()
+        setWorkflowTray(getAllWorkflows())
     }
 
     /**
@@ -76,7 +81,7 @@ object MacWorkflowManager : WorkflowManager {
         if (workflow.exists() && workflow.isDirectory) {
             workflow.deleteRecursively() // 递归删除文件夹
         }
-        refreshTray()
+        setWorkflowTray(getAllWorkflows())
     }
 
     /**
@@ -90,19 +95,21 @@ object MacWorkflowManager : WorkflowManager {
         return null
     }
 
+    private fun setWorkflowTray(workflows: List<Workflow>) {
+        removeAllItem()
+        workflows.forEach {
+            addMenuItem(it.name) {
+                runWorkflow(it.path)
+            }
+        }
+        addMenuItem("退出") {
+            exitProcess(0)
+        }
+    }
 
     private fun checkWorkflowDir() {
         if (!workflowDirectory.exists()) {
             workflowDirectory.mkdirs()
-        }
-    }
-
-    fun refreshTray() {
-        removeAllItem()
-        getAllWorkflows().forEach {
-            addMenuItem(it.name) {
-                runWorkflow(it.path)
-            }
         }
     }
 }
