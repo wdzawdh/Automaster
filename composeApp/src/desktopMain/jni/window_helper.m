@@ -86,6 +86,16 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_dock_WindowHelper_frontWindow(JNIE
     [NSApp activateIgnoringOtherApps:YES];
 }
 
+// 显示应用在 Dock 栏
+JNIEXPORT void JNICALL Java_com_cw_automaster_dock_WindowHelper_showInDock(JNIEnv *env, jobject obj) {
+    [[NSApplication sharedApplication] setActivationPolicy:NSApplicationActivationPolicyRegular];
+}
+
+// 隐藏应用在 Dock 栏
+JNIEXPORT void JNICALL Java_com_cw_automaster_dock_WindowHelper_hideFromDock(JNIEnv *env, jobject obj) {
+    [[NSApplication sharedApplication] setActivationPolicy:NSApplicationActivationPolicyAccessory];
+}
+
 /*
 clang -dynamiclib dock_listener.m -o libdocklistener.dylib \
   -I"$JAVA_HOME/include" \

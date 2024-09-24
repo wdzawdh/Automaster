@@ -3,19 +3,15 @@ package com.cw.automaster
 import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.platform.ConfigStore
 import com.cw.automaster.platform.FileSelector
+import com.cw.automaster.platform.KeyValueStore
 import com.cw.automaster.platform.MacConfigStore
-import com.cw.automaster.platform.WorkflowManager
 import com.cw.automaster.platform.MacFileSelector
-import com.cw.automaster.platform.MacPermissionManager
 import com.cw.automaster.platform.MacKeyValueStore
-import com.cw.automaster.platform.MacShortcutManger
+import com.cw.automaster.platform.MacWorkflowManager
+import com.cw.automaster.platform.WorkflowManager
 import com.cw.automaster.utils.isLinux
 import com.cw.automaster.utils.isMac
 import com.cw.automaster.utils.isWindows
-import com.cw.automaster.platform.MacWorkflowManager
-import com.cw.automaster.platform.PermissionManager
-import com.cw.automaster.platform.KeyValueStore
-import com.cw.automaster.platform.ShortcutManager
 import java.awt.Desktop
 import java.net.URI
 
@@ -48,20 +44,6 @@ actual fun getFileSelector(): FileSelector? {
 actual fun getConfigStore(): ConfigStore? {
     if (isMac) {
         return MacConfigStore
-    }
-    return null
-}
-
-actual fun getPermissionManager(): PermissionManager? {
-    if (isMac) {
-        return MacPermissionManager
-    }
-    return null
-}
-
-actual fun getShortcutManager(): ShortcutManager? {
-    if (isMac) {
-        return MacShortcutManger
     }
     return null
 }

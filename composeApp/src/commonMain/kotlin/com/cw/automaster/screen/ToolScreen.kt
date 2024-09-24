@@ -1,6 +1,5 @@
 package com.cw.automaster.screen
 
-import MessageDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,6 +19,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,15 +36,11 @@ import automaster.composeapp.generated.resources.back
 import automaster.composeapp.generated.resources.bug
 import automaster.composeapp.generated.resources.logo
 import com.cw.automaster.BuildConfig
-import com.cw.automaster.KEY_GLOBAL_SHORTCUT
 import com.cw.automaster.URL_NEW_ISSUES
-import com.cw.automaster.keyValueStore
-import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.Screen
 import com.cw.automaster.manager.ScreenManager
 import com.cw.automaster.openUrl
-import com.cw.automaster.permissionManager
-import com.cw.automaster.registerKeyboard
+import com.cw.automaster.settingItems
 import com.cw.automaster.theme.BgColor
 import com.cw.automaster.theme.TextBlack
 import com.cw.automaster.theme.TextBlue
@@ -122,52 +118,35 @@ private fun SettingScreen() {
             .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
             .background(color = Color.White, shape = RoundedCornerShape(8.dp))
     ) {
-        var isGlobalKey by remember {
-            mutableStateOf(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
+        settingItems.forEach {
+            SettingItem(it.title, it.isOpen, it.onToggle)
         }
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(start = 18.dp, end = 12.dp)
-        ) {
-            Text(
-                "全局快捷键",
-                color = TextBlack,
-                fontSize = 14.sp,
+    }
+}
+
+@Composable
+fun SettingItem(
+    title: String,
+    checked: MutableState<Boolean>,
+    onCheckedChange: (Boolean) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(start = 18.dp, end = 12.dp)
+    ) {
+        Text(
+            title,
+            color = TextBlack,
+            fontSize = 14.sp,
+        )
+        Spacer(Modifier.weight(1f))
+        Switch(
+            checked = checked.value,
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = ThemeColor, // 开启时开关圆点颜色
             )
-            Spacer(Modifier.weight(1f))
-            Switch(
-                checked = isGlobalKey,
-                onCheckedChange = { isOpen ->
-                    if (isOpen) {
-                        if (permissionManager?.checkPermission() == true) {
-                            registerKeyboard(true)
-                            isGlobalKey = true
-                        } else {
-                            DialogManager.show {
-                                MessageDialog(
-                                    message = "全局快捷键需要添加“辅助功能”权限",
-                                    confirmText = "去添加"
-                                ) { confirm ->
-                                    DialogManager.dismiss()
-                                    if (confirm) {
-                                        permissionManager?.requestPermission {
-                                            registerKeyboard(true)
-                                            isGlobalKey = it
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else {
-                        registerKeyboard(false)
-                        isGlobalKey = false
-                    }
-                },
-                colors = SwitchDefaults.colors(
-                    checkedThumbColor = ThemeColor, // 开启时开关圆点颜色
-                )
-            )
-        }
+        )
     }
 }
 
