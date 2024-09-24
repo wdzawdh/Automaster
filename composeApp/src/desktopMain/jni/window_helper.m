@@ -70,7 +70,7 @@ void dockIconClicked() {
 }
 
 // JNI 函数，用于从 Java 代码中初始化监听器
-JNIEXPORT void JNICALL Java_com_cw_automaster_dock_DockListener_setupDockListener(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_com_cw_automaster_dock_WindowHelper_setupDockListener(JNIEnv *env, jobject obj) {
     // 获取当前 JVM 实例
     (*env)->GetJavaVM(env, &jvm);
 
@@ -79,6 +79,11 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_dock_DockListener_setupDockListene
 
     // 设置 Dock 图标的监听器
     setupDockIconListener();
+}
+
+JNIEXPORT void JNICALL Java_com_cw_automaster_dock_WindowHelper_frontWindow(JNIEnv *env, jobject obj) {
+    // 获取当前应用实例并激活它
+    [NSApp activateIgnoringOtherApps:YES];
 }
 
 /*

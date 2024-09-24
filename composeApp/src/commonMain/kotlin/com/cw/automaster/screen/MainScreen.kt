@@ -384,12 +384,6 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
                     }
                     DropdownMenuItem(onClick = {
                         expanded = false
-                        fileSelector?.openFolder(workflow.path)
-                    }) {
-                        Text("打开文件位置", fontSize = 14.sp)
-                    }
-                    DropdownMenuItem(onClick = {
-                        expanded = false
                         fileSelector?.selectFolder { path ->
                             if (path.isNotEmpty()) {
                                 try {

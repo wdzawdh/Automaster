@@ -46,11 +46,10 @@ import com.cw.automaster.openUrl
 import com.cw.automaster.permissionManager
 import com.cw.automaster.registerKeyboard
 import com.cw.automaster.theme.BgColor
-import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.theme.TextBlack
 import com.cw.automaster.theme.TextBlue
 import com.cw.automaster.theme.TextGrey
-import com.cw.automaster.theme.SecondaryColor
+import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.widget.TabLayout
 import org.jetbrains.compose.resources.painterResource
 
@@ -223,7 +222,7 @@ private fun AboutScreen() {
                 tint = TextBlue
             )
             Text(
-                "报告问题",
+                "报告问题 ↗",
                 fontSize = 13.sp,
                 color = TextBlue,
                 modifier = Modifier.padding(horizontal = 5.dp)

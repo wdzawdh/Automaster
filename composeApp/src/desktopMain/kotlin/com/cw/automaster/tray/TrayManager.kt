@@ -16,6 +16,8 @@ object TrayManager {
             return
         }
         try {
+            // 丢弃系统托盘颜色信息，自动切换
+            System.setProperty("apple.awt.enableTemplateImages", "true")
             // 创建托盘图标
             val trayIcon = java.awt.TrayIcon(
                 ImageIO.read(object {}.javaClass.getResource("/tray.png"))
@@ -36,6 +38,10 @@ object TrayManager {
                 }
             }
         )
+    }
+
+    fun addSeparator() {
+        popupMenu.addSeparator()
     }
 
     fun removeAllItem() {

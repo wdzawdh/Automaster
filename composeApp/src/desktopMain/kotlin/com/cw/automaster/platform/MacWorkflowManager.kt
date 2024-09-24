@@ -1,10 +1,12 @@
 package com.cw.automaster.platform
 
+import com.cw.automaster.dock.WindowHelper
+import com.cw.automaster.fileSelector
 import com.cw.automaster.model.Workflow
-import com.cw.automaster.tray.TrayManager.addMenuItem
-import com.cw.automaster.tray.TrayManager.removeAllItem
+import com.cw.automaster.tray.TrayManager
 import com.cw.automaster.utils.RuntimeUtils
 import com.cw.automaster.utils.FileUtils
+import com.cw.automaster.windowVisible
 import java.io.File
 import java.io.IOException
 import java.nio.file.Files
@@ -96,13 +98,23 @@ object MacWorkflowManager : WorkflowManager {
     }
 
     private fun setWorkflowTray(workflows: List<Workflow>) {
-        removeAllItem()
-        workflows.forEach {
-            addMenuItem(it.name) {
+        TrayManager.removeAllItem()
+        TrayManager.addMenuItem("显示主界面") {
+            windowVisible.value = true
+            WindowHelper.frontWindow()
+        }
+        TrayManager.addSeparator()
+        TrayManager.addMenuItem("打开管理文件夹") {
+            fileSelector?.openFolder(workflowDirectory.path)
+        }
+        TrayManager.addSeparator()
+        workflows.take(10).forEach {
+            TrayManager.addMenuItem(it.name) {
                 runWorkflow(it.path)
             }
         }
-        addMenuItem("退出") {
+        TrayManager.addSeparator()
+        TrayManager.addMenuItem("退出") {
             exitProcess(0)
         }
     }

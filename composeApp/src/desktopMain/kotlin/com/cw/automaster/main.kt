@@ -1,21 +1,19 @@
 package com.cw.automaster
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import com.cw.automaster.dock.DockListener
+import com.cw.automaster.dock.WindowHelper
 import com.cw.automaster.platform.MacWorkflowManager
-import com.cw.automaster.tray.TrayManager
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
 
+val windowVisible = mutableStateOf(true)
 
 fun main() = application {
-    val isVisible = remember { mutableStateOf(true) }
 
     // Tray
     MacWorkflowManager.initTray()
@@ -25,8 +23,8 @@ fun main() = application {
         height = 800.dp  // 设置窗口的默认高度
     )
     Window(
-        onCloseRequest = { isVisible.value = false },
-        visible = isVisible.value,
+        onCloseRequest = { windowVisible.value = false },
+        visible = windowVisible.value,
         state = windowState,  // 使用窗口状态来管理窗口的大小
         title = "Automaster"
     ) {
@@ -34,7 +32,7 @@ fun main() = application {
         window.minimumSize = Dimension(400, 400)
         // 监听Dock图标被点击
         setDockListener {
-            isVisible.value = true
+            windowVisible.value = true
         }
         // UI
         App()
@@ -43,9 +41,7 @@ fun main() = application {
 
 private fun setDockListener(onDockIconClicked: (() -> Unit)) {
     GlobalScope.launch {
-        val dockListener = DockListener()
-        dockListener.onDockIconClicked = onDockIconClicked
-        dockListener.setupDockListener()
+        WindowHelper.setOnDockIconClicked(onDockIconClicked)
     }
 }
 
