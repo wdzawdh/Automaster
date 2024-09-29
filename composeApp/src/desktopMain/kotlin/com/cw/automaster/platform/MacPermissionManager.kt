@@ -2,18 +2,18 @@ package com.cw.automaster.platform
 
 import MessageDialog
 import com.cw.automaster.manager.DialogManager
-import com.cw.automaster.permission.AccessibilityHelper
+import com.cw.automaster.permission.PermissionHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 object MacPermissionManager : PermissionManager {
 
     override fun checkPermission(): Boolean {
-        return AccessibilityHelper.hasAccessibilityPermission()
+        return PermissionHelper.hasAccessibilityPermission()
     }
 
     override fun requestPermission(callback: (success: Boolean) -> Unit) {
-        AccessibilityHelper.openAccessibilitySettings()
+        PermissionHelper.openAccessibilitySettings()
         runBlocking { delay(2000) }
         DialogManager.show {
             MessageDialog(

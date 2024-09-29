@@ -1,12 +1,12 @@
 package com.cw.automaster.platform
 
-import com.cw.automaster.permission.AccessibilityHelper
+import com.cw.automaster.permission.PermissionHelper
 import com.cw.automaster.shortcut.JvmShortcutUtils
 import com.cw.automaster.shortcut.MacShortcutUtils
 
 object MacShortcutManger : ShortcutManager {
     override fun registerKeyEvent(global: Boolean, onKeyDown: (key: String) -> Boolean) {
-        if (global && AccessibilityHelper.hasAccessibilityPermission()) {
+        if (global && PermissionHelper.hasAccessibilityPermission()) {
             JvmShortcutUtils.unregisterShortcut()
             // 注册全局键盘监听器
             MacShortcutUtils.registerShortcut { key ->

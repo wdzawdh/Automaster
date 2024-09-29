@@ -130,10 +130,13 @@ compose.desktop {
                 bundleID = "com.cw.automaster"
                 iconFile.set(project.file("launcher/logo.icns"))
                 dockName = packageName
-                /*signing {
+                /*
+                entitlementsFile.set(project.layout.projectDirectory.file("src/desktopMain/resources/sandbox.entitlements"))
+                signing {
                     sign.set(true)
                     identity = "Developer ID Application: Your Name (Team ID)"
-                }*/
+                }
+                */
             }
         }
     }
@@ -201,7 +204,9 @@ sourceFiles.forEach { sourceFile ->
             "clang", "-dynamiclib", "-o", outputLib.absolutePath, sourceFile.absolutePath,
             "-I${System.getenv("JAVA_HOME")}/include",
             "-I${System.getenv("JAVA_HOME")}/include/darwin",
-            "-framework", "Cocoa"
+            "-framework", "Cocoa",
+            "-framework", "Foundation",
+            "-framework", "ServiceManagement",
         )
         // 检查是否需要重新编译
         outputs.file(outputLib)

@@ -16,6 +16,7 @@ import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
 import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.model.Setting
+import com.cw.automaster.permission.PermissionHelper
 import com.cw.automaster.platform.MacPermissionManager
 import com.cw.automaster.platform.MacShortcutManger
 import com.cw.automaster.platform.MacWorkflowManager
@@ -69,6 +70,12 @@ fun main() = application {
 
 private fun addSettingItems() {
     settingItems.clear()
+    val autoLaunch = mutableStateOf(keyValueStore?.getBoolean(KEY_AUTO_LAUNCH) == true)
+    Setting("开机自启动", autoLaunch) { isAuto ->
+        PermissionHelper.toggleAutoLaunch(isAuto)
+        keyValueStore?.setBoolean(KEY_AUTO_LAUNCH, isAuto)
+        autoLaunch.value = isAuto
+    }.apply { settingItems.add(this) }
     val isGlobalKey = mutableStateOf(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
     Setting("全局快捷键", isGlobalKey) { isGlobal ->
         if (isGlobal) {
@@ -97,7 +104,7 @@ private fun addSettingItems() {
         }
     }.apply { settingItems.add(this) }
     val hideDockKey = mutableStateOf(keyValueStore?.getBoolean(KEY_HIDE_DOCK_ICON) == true)
-    Setting("后台运行时隐藏Dock栏图标", hideDockKey) { isHide ->
+    Setting("后台运行时隐藏程序坞图标", hideDockKey) { isHide ->
         keyValueStore?.setBoolean(KEY_HIDE_DOCK_ICON, isHide)
         hideDockKey.value = isHide
     }.apply { settingItems.add(this) }
