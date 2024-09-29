@@ -1,8 +1,6 @@
-#import <Foundation/Foundation.h>
-#import <ServiceManagement/ServiceManagement.h>
-#import <ApplicationServices/ApplicationServices.h>
-#import <Cocoa/Cocoa.h>
 #import <jni.h>
+#import <Cocoa/Cocoa.h>
+#import <ServiceManagement/ServiceManagement.h>
 
 // 检查是否获得辅助功能权限
 JNIEXPORT jboolean Java_com_cw_automaster_permission_PermissionHelper_hasAccessibilityPermission(JNIEnv *env, jobject obj) {
@@ -52,8 +50,9 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_permission_PermissionHelper_remove
 }
 
 /*
-clang -dynamiclib accessibility_helper.m -o libaccessibility_helper.dylib \
+clang -dynamiclib permission_helper.m -o permission_helper.dylib \
   -I"$JAVA_HOME/include" \
   -I"$JAVA_HOME/include/darwin" \
   -framework Cocoa
+  -framework ServiceManagement
 */

@@ -205,7 +205,6 @@ sourceFiles.forEach { sourceFile ->
             "-I${System.getenv("JAVA_HOME")}/include",
             "-I${System.getenv("JAVA_HOME")}/include/darwin",
             "-framework", "Cocoa",
-            "-framework", "Foundation",
             "-framework", "ServiceManagement",
         )
         // 检查是否需要重新编译
