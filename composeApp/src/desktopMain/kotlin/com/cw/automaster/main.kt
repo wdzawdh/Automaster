@@ -1,11 +1,9 @@
 package com.cw.automaster
 
-import MessageDialog
 import SHORTCUT_DIALOG_NAME
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -14,13 +12,11 @@ import com.cw.automaster.dock.WindowHelper
 import com.cw.automaster.manager.ConfigManager
 import com.cw.automaster.manager.DialogManager
 import com.cw.automaster.manager.LoadingManager
-import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.model.Setting
 import com.cw.automaster.permission.PermissionHelper
-import com.cw.automaster.platform.MacPermissionManager
 import com.cw.automaster.platform.MacShortcutManger
 import com.cw.automaster.platform.MacWorkflowManager
-import kotlinx.coroutines.CoroutineScope
+import com.cw.automaster.shortcut.ShortcutHelper
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.awt.Dimension
@@ -28,12 +24,8 @@ import java.awt.Dimension
 val windowVisible = mutableStateOf(true)
 
 fun main() = application {
-
     // Tray
     MacWorkflowManager.initTray()
-
-    // shortcut
-    registerKeyboard(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
 
     // dock
     val windowVisibleDer = derivedStateOf { windowVisible.value }
@@ -63,8 +55,8 @@ fun main() = application {
         addSettingItems()
         // UI
         App()
-        // shortcut permission
-        checkPermission(rememberCoroutineScope())
+        // shortcut
+        registerKeyboard()
     }
 }
 
@@ -75,33 +67,6 @@ private fun addSettingItems() {
         PermissionHelper.toggleAutoLaunch(isAuto)
         keyValueStore?.setBoolean(KEY_AUTO_LAUNCH, isAuto)
         autoLaunch.value = isAuto
-    }.apply { settingItems.add(this) }
-    val isGlobalKey = mutableStateOf(keyValueStore?.getBoolean(KEY_GLOBAL_SHORTCUT) == true)
-    Setting("全局快捷键", isGlobalKey) { isGlobal ->
-        if (isGlobal) {
-            if (MacPermissionManager.checkPermission()) {
-                registerKeyboard(true)
-                isGlobalKey.value = true
-            } else {
-                DialogManager.show {
-                    MessageDialog(
-                        message = "全局快捷键需要添加“辅助功能”权限",
-                        confirmText = "去添加"
-                    ) { confirm ->
-                        DialogManager.dismiss()
-                        if (confirm) {
-                            MacPermissionManager.requestPermission {
-                                registerKeyboard(true)
-                                isGlobalKey.value = it
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            registerKeyboard(false)
-            isGlobalKey.value = false
-        }
     }.apply { settingItems.add(this) }
     val hideDockKey = mutableStateOf(keyValueStore?.getBoolean(KEY_HIDE_DOCK_ICON) == true)
     Setting("后台运行时隐藏程序坞图标", hideDockKey) { isHide ->
@@ -116,26 +81,8 @@ private fun setDockListener(onDockIconClicked: (() -> Unit)) {
     }
 }
 
-private fun checkPermission(scope: CoroutineScope) {
-    if (!MacPermissionManager.checkPermission()) {
-        SnackbarManager.showMessage(
-            coroutineScope = scope,
-            message = "打开“辅助功能”可以启用全局快捷键",
-            actionLabel = "去打开"
-        ) {
-            MacPermissionManager.requestPermission {
-                if (it) {
-                    registerKeyboard(true)
-                    SnackbarManager.showMessage(scope, "全局快捷键已打开")
-                }
-            }
-        }
-        keyValueStore?.setBoolean(KEY_GLOBAL_SHORTCUT, false)
-    }
-}
-
-fun registerKeyboard(global: Boolean) {
-    MacShortcutManger.registerKeyEvent(global) { key ->
+fun registerKeyboard() {
+    MacShortcutManger.setOnKeyDownListener { key ->
         if (!DialogManager.isShow(SHORTCUT_DIALOG_NAME)) {
             ConfigManager.getConfigs().forEach {
                 if (it.shortcut == key) {
@@ -144,12 +91,16 @@ fun registerKeyboard(global: Boolean) {
                         workflowManager?.runWorkflow(it.path)
                         LoadingManager.dismiss()
                     }
-                    return@registerKeyEvent true
+                    return@setOnKeyDownListener
                 }
             }
         }
-        return@registerKeyEvent false
     }
-    keyValueStore?.setBoolean(KEY_GLOBAL_SHORTCUT, global)
+    ConfigManager.getConfigs().forEach {
+        val shortcut = it.shortcut
+        if (shortcut != null) {
+            MacShortcutManger.registerKeyEvent(shortcut)
+        }
+    }
 }
 

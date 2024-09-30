@@ -15,11 +15,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import com.cw.automaster.model.Shortcut
 import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.utils.ShortcutUtils
 
@@ -27,12 +29,12 @@ const val SHORTCUT_DIALOG_NAME = "ShortcutDialog"
 
 @Composable
 fun ShortcutDialog(
-    shortcutKey: String? = null,
-    onShortcutSet: (String?) -> Unit
+    shortcut: Shortcut? = null,
+    onShortcutSet: (Shortcut?) -> Unit
 ) {
-    var keyString by remember { mutableStateOf(shortcutKey) }
+    var keyString by remember { mutableStateOf(shortcut) }
     AlertDialog(
-        onDismissRequest = { onShortcutSet(null) },
+        onDismissRequest = { onShortcutSet(keyString) },
         title = { Text("") },
         text = {
             val focusRequester = remember { FocusRequester() }
@@ -44,9 +46,13 @@ fun ShortcutDialog(
                     .focusable()
                     .onKeyEvent { keyEvent ->
                         if (keyEvent.type == KeyEventType.KeyDown) {
-                            val shortcut = ShortcutUtils.getShortcut(keyEvent)
-                            if (shortcut != null) {
-                                keyString = shortcut
+                            if (keyEvent.key == Key.Backspace) {
+                                keyString = null
+                                return@onKeyEvent true
+                            }
+                            val input = ShortcutUtils.getShortcut(keyEvent)
+                            if (input != null) {
+                                keyString = input
                                 return@onKeyEvent true
                             }
                         }
@@ -54,7 +60,7 @@ fun ShortcutDialog(
                     }
             ) {
                 Text(
-                    text = keyString ?: "按下快捷键",
+                    text = keyString?.toString() ?: "按下快捷键",
                     fontSize = 20.sp,
                 )
             }
@@ -76,7 +82,7 @@ fun ShortcutDialog(
         },
         dismissButton = {
             TextButton(
-                onClick = { onShortcutSet(null) },
+                onClick = { onShortcutSet(keyString) },
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = ThemeColor
                 )

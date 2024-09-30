@@ -8,7 +8,6 @@ import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -65,6 +64,7 @@ import com.cw.automaster.manager.SnackbarManager
 import com.cw.automaster.model.Config
 import com.cw.automaster.model.Workflow
 import com.cw.automaster.platformType
+import com.cw.automaster.shortcutManager
 import com.cw.automaster.theme.BgColor
 import com.cw.automaster.theme.ThemeColor
 import com.cw.automaster.theme.TextBlack
@@ -317,7 +317,7 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
             }
             if (shortcut != null) {
                 Text(
-                    text = shortcut,
+                    text = shortcut.toString(),
                     fontSize = 14.sp,
                     color = TextGrey,
                     fontWeight = FontWeight.Bold,
@@ -404,14 +404,24 @@ fun WorkflowItem(workflow: Workflow, onWorkflowUpdate: () -> Unit) {
                             expanded = false
                             DialogManager.show(SHORTCUT_DIALOG_NAME) {
                                 val updateConfig = config ?: Config(workflow.path)
-                                ShortcutDialog(updateConfig.shortcut) { shortcut ->
+                                val oldShortcut = updateConfig.shortcut
+                                ShortcutDialog(oldShortcut) { newShortcut ->
                                     DialogManager.dismiss()
-                                    if (shortcut != null) {
-                                        updateConfig.shortcut = shortcut
-                                        ConfigManager.addOrUpdateConfig(updateConfig)
-                                        workflow.lastModified = getCurrentTimestamp()
-                                        onWorkflowUpdate()
+                                    if (newShortcut != null) {
+                                        if (shortcutManager?.registerKeyEvent(newShortcut) == true) {
+                                            updateConfig.shortcut = newShortcut
+                                        } else {
+                                            SnackbarManager.showMessage(scope, "$newShortcut 键位冲突")
+                                        }
+                                    } else {
+                                        if (oldShortcut != null) {
+                                            shortcutManager?.unregisterKeyEvent(oldShortcut)
+                                            updateConfig.shortcut = null
+                                        }
                                     }
+                                    ConfigManager.addOrUpdateConfig(updateConfig)
+                                    workflow.lastModified = getCurrentTimestamp()
+                                    onWorkflowUpdate()
                                 }
                             }
                         }) {

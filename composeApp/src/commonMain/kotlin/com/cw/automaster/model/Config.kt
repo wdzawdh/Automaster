@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Config(
     val path: String,
     var name: String? = null,
-    var shortcut: String? = null,
+    var shortcut: Shortcut? = null,
 )

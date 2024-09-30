@@ -7,7 +7,9 @@ import com.cw.automaster.platform.KeyValueStore
 import com.cw.automaster.platform.MacConfigStore
 import com.cw.automaster.platform.MacFileSelector
 import com.cw.automaster.platform.MacKeyValueStore
+import com.cw.automaster.platform.MacShortcutManger
 import com.cw.automaster.platform.MacWorkflowManager
+import com.cw.automaster.platform.ShortcutManager
 import com.cw.automaster.platform.WorkflowManager
 import com.cw.automaster.utils.isLinux
 import com.cw.automaster.utils.isMac
@@ -66,4 +68,11 @@ actual fun openUrl(url: String) {
     } catch (e: Exception) {
         e.printStackTrace()
     }
+}
+
+actual fun getShortcutManager(): ShortcutManager? {
+    if (isMac) {
+        return MacShortcutManger
+    }
+    return null
 }

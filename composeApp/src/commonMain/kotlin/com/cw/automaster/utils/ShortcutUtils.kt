@@ -11,10 +11,11 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.type
 import com.cw.automaster.emum.PlatformType
 import com.cw.automaster.getPlatformType
+import com.cw.automaster.model.Shortcut
 
 object ShortcutUtils {
 
-    fun getShortcut(keyEvent: KeyEvent): String? {
+    fun getShortcut(keyEvent: KeyEvent): Shortcut? {
         if (keyEvent.key in keys && keyEvent.type == KeyEventType.KeyDown) {
             val platformType = getPlatformType()
             if (platformType == PlatformType.MAC) {
@@ -24,23 +25,25 @@ object ShortcutUtils {
         return null
     }
 
-    private fun macShortcut(keyEvent: KeyEvent): String? {
+    private fun macShortcut(keyEvent: KeyEvent): Shortcut? {
         if (keyEvent.isCtrlPressed || keyEvent.isShiftPressed || keyEvent.isMetaPressed || keyEvent.isAltPressed) {
-            return buildString {
-                if (keyEvent.isCtrlPressed) {
-                    append("⌃+")
+            return Shortcut(
+                key = keyEvent.key.toString().replace("Key: ", ""),
+                modifiers = arrayListOf<String>().apply {
+                    if (keyEvent.isMetaPressed) {
+                        add("⌘")
+                    }
+                    if (keyEvent.isShiftPressed) {
+                        add("⇧")
+                    }
+                    if (keyEvent.isCtrlPressed) {
+                        add("⌃")
+                    }
+                    if (keyEvent.isAltPressed) {
+                        add("⌥")
+                    }
                 }
-                if (keyEvent.isShiftPressed) {
-                    append("⇧+")
-                }
-                if (keyEvent.isMetaPressed) {
-                    append("⌘+")
-                }
-                if (keyEvent.isAltPressed) {
-                    append("⌥+")
-                }
-                append(keyEvent.key.toString().replace("Key: ", ""))
-            }
+            )
         }
         return null
     }

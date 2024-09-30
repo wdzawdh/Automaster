@@ -17,6 +17,7 @@ import com.cw.automaster.widget.Loading
 // global object
 val platformType = getPlatformType()
 val workflowManager = getWorkflowManager()
+val shortcutManager = getShortcutManager()
 val fileSelector = getFileSelector()
 val keyValueStore = getKeyValueStore()
 val settingItems = mutableListOf<Setting>()

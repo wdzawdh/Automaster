@@ -1,6 +1,9 @@
 package com.cw.automaster.platform
 
+import com.cw.automaster.model.Shortcut
+
 interface ShortcutManager {
-    fun registerKeyEvent(global: Boolean, onKeyDown: (key: String) -> Boolean)
-    fun unregisterKeyEvent(global: Boolean)
+    fun setOnKeyDownListener(onKeyDown: (shortcut: Shortcut) -> Unit)
+    fun registerKeyEvent(shortcut: Shortcut): Boolean
+    fun unregisterKeyEvent(shortcut: Shortcut)
 }
