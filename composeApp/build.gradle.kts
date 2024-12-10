@@ -199,8 +199,11 @@ sourceFiles.forEach { sourceFile ->
     val outputDir = file("$buildDir/libs")
     val outputLib = file("${outputDir}/${libName}")
     val compileTask = tasks.register<Exec>("compile${sourceFile.nameWithoutExtension}DynamicLib") {
+        // 编译dylib依赖Java/include
         commandLine = listOf(
-            "clang", "-dynamiclib", "-o", outputLib.absolutePath, sourceFile.absolutePath,
+            "clang",
+            "-dynamiclib", sourceFile.absolutePath,
+            "-o", outputLib.absolutePath,
             "-I${System.getenv("JAVA_HOME")}/include",
             "-I${System.getenv("JAVA_HOME")}/include/darwin",
             "-framework", "Cocoa",

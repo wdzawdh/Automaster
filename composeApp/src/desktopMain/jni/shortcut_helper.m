@@ -79,3 +79,11 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_shortcut_ShortcutHelper_unregister
         [hotKeyRefs removeObjectForKey:@(hotKeyID)];
     }
 }
+
+/*
+clang -dynamiclib shortcut_helper.m -o shortcut_helper.dylib \
+  -I"$JAVA_HOME/include" \
+  -I"$JAVA_HOME/include/darwin" \
+  -framework Carbon \
+  -framework Cocoa
+*/

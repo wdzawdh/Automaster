@@ -97,7 +97,7 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_dock_WindowHelper_hideFromDock(JNI
 }
 
 /*
-clang -dynamiclib dock_listener.m -o libdocklistener.dylib \
+clang -dynamiclib window_helper.m -o window_helper.dylib \
   -I"$JAVA_HOME/include" \
   -I"$JAVA_HOME/include/darwin" \
   -framework Cocoa

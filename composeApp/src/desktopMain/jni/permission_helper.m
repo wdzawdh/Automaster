@@ -53,6 +53,6 @@ JNIEXPORT void JNICALL Java_com_cw_automaster_permission_PermissionHelper_remove
 clang -dynamiclib permission_helper.m -o permission_helper.dylib \
   -I"$JAVA_HOME/include" \
   -I"$JAVA_HOME/include/darwin" \
-  -framework Cocoa
+  -framework Cocoa \
   -framework ServiceManagement
 */
